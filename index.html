@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Paso a Paso</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Paso a Paso">
+<meta name="theme-color" content="#1d2747">
+<meta name="app-version" content="paso-v4-9755053f">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#1d2747; --panel:#27345e; --panel2:#33437a; --ink:#fff8ee; --muted:#b9c3e0;
+  --accent:#ffb84d; --good:#5fd38d; --soft:#cdb4db; --blue:#7ec8e3; --pink:#ff8fab; --orange:#f4a261;
+  --tile:#fdf6e7; --tileInk:#2a2420; --radius:20px;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",Roboto,"Noto Color Emoji",sans-serif;
+  -webkit-user-select:none;user-select:none;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body{padding-top:var(--safe-t);padding-bottom:var(--safe-b)}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation;background:none}
+button:disabled{cursor:default}
+#app{max-width:1100px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:10px;padding:12px 18px;min-height:72px}
+.topbar .title{font-size:24px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar .sub{font-size:16px;color:var(--muted);font-weight:600;margin-left:6px}
+.chip{background:var(--panel2);border-radius:999px;padding:9px 14px;font-weight:700;font-size:18px;white-space:nowrap}
+.en-chip{background:var(--blue);color:#10243a}
+.btn{background:var(--accent);color:#2a1d05;border-radius:16px;padding:14px 22px;font-size:22px;font-weight:800;min-height:62px;min-width:62px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.btn.secondary{background:var(--panel2);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--muted);font-weight:600;box-shadow:none}
+.btn.small{padding:10px 16px;min-height:52px;font-size:18px}
+.btn:disabled{opacity:.45}
+.btn.go{font-size:28px;padding:18px 34px;background:var(--good);color:#0c2a1b}
+.btn:active,.tile-pic:active,.opt:active,.key:active,.wtile:active,.card:active,.lesson-dot:active{transform:scale(.96)}
+.screen{flex:1;padding:6px 22px 26px;display:flex;flex-direction:column;gap:14px}
+.screen.center{align-items:center;justify-content:center;text-align:center}
+h1{font-size:34px;margin:4px 0}
+h2{font-size:26px;margin:4px 0}
+p{font-size:20px;line-height:1.45;margin:0}
+.muted{color:var(--muted)}
+.small-note{font-size:17px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.card{background:var(--panel);border-radius:var(--radius);padding:20px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.card .big{font-size:26px;font-weight:800}
+.card .emoji{font-size:44px}
+.big-choice{flex-direction:row;align-items:center;gap:18px}
+.player-card{align-items:center;text-align:center;min-height:250px;justify-content:center;border:4px solid transparent}
+.player-card .avatar{width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#1d2b27}
+.player-card .name{font-size:30px;font-weight:800}
+.edit{font-size:18px;color:var(--muted);padding:10px 14px;background:var(--panel2);border-radius:12px;min-height:48px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+.progress{height:12px;background:var(--panel2);border-radius:999px;overflow:hidden}
+.progress>div{height:100%;background:var(--good);transition:width .4s}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center}
+.toast{position:fixed;left:50%;bottom:calc(30px + var(--safe-b));transform:translateX(-50%);background:var(--accent);color:#2a1d05;font-weight:800;font-size:22px;padding:14px 24px;border-radius:999px;z-index:60;text-align:center}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{background:var(--panel);border-radius:24px;padding:28px;max-width:560px;width:100%;display:flex;flex-direction:column;gap:14px;text-align:center}
+.modal input{font-size:26px;padding:14px;border-radius:14px;border:0;width:100%;text-align:center;-webkit-user-select:text;user-select:text}
+.en{font-size:16px;color:var(--blue);font-style:italic;margin-top:4px;font-weight:500}
+.idea{background:var(--panel);border-radius:20px;padding:24px;font-size:20px;line-height:1.5}
+a{color:var(--blue)}
+
+/* ---------- hub / path ---------- */
+.today .big{font-size:24px;margin-bottom:8px}
+.path{display:flex;flex-direction:column;gap:12px}
+.unit{background:var(--panel);border-radius:20px;overflow:hidden;border:3px solid transparent}
+.unit.open{border-color:var(--accent)}
+.unit.locked{opacity:.55}
+.unit.soon{opacity:.45}
+.unit.done .uicon{background:var(--good)}
+.unit-head{display:flex;gap:14px;align-items:center;padding:14px 16px;width:100%;min-height:76px}
+.uicon{font-size:34px;width:58px;height:58px;border-radius:16px;background:var(--panel2);display:flex;align-items:center;justify-content:center;flex:none}
+.utitle{font-size:22px;font-weight:800}
+.chev{font-size:26px;color:var(--muted)}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;padding:0 14px 14px}
+.lesson-dot{background:var(--panel2);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:10px;text-align:left;min-height:70px;align-items:center}
+.lesson-dot .ld-icon{font-size:30px;grid-row:span 2}
+.lesson-dot .ld-title{font-size:18px;font-weight:700}
+.lesson-dot .ld-stars{color:var(--accent);font-size:18px;letter-spacing:2px}
+.lesson-dot .en{grid-column:1/3;font-size:14px}
+.lesson-dot.done{background:#2f5a4f}
+.lesson-dot.current{outline:4px solid var(--accent);animation:pulse 1.6s infinite}
+.lesson-dot.locked{opacity:.5}
+@keyframes pulse{0%,100%{outline-color:var(--accent)}50%{outline-color:rgba(255,184,77,.35)}}
+
+/* ---------- lesson ---------- */
+.lesson{gap:10px}
+.lesson-progress{display:flex;align-items:center;gap:12px}
+.lesson-progress .progress{flex:1}
+.set-label{font-weight:800;font-size:18px;white-space:nowrap}
+.instr{font-size:24px;font-weight:800;text-align:center}
+.instr .ii{font-size:28px}
+.tag{font-size:15px;background:var(--panel2);border-radius:999px;padding:4px 10px;vertical-align:middle;font-weight:700}
+.stage{display:flex;flex-direction:column;align-items:center;gap:14px;flex:1;justify-content:center}
+.es{font-size:26px;font-weight:800;text-align:center;line-height:1.3}
+.big-es{font-size:clamp(28px,4.6vw,44px)}
+.hero-card{background:var(--tile);color:var(--tileInk);border-radius:28px;padding:18px 26px;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:min(560px,92%);box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.hero-card .en{color:#3d6f91}
+.hero-card.slim{padding:12px 22px;min-width:min(420px,80%)}
+.hero-card.row-hero{flex-direction:row;justify-content:center;gap:24px}
+.audio-row{display:flex;gap:12px;justify-content:center}
+.btn.audio{background:var(--blue);color:#0d2233;font-size:30px;min-width:76px;min-height:68px;border-radius:999px;padding:8px 20px}
+.btn.audio.big{font-size:40px;min-width:110px;min-height:84px}
+.btn.audio.slow{background:#a8e6cf;font-size:28px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%;max-width:760px}
+.tiles.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tile-pic{background:var(--tile);color:var(--tileInk);border-radius:24px;min-height:200px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 rgba(0,0,0,.25);padding:10px;transition:background .2s,opacity .2s,transform .1s;border:5px solid transparent}
+.tile-pic.good,.opt.good{background:#c9f5d9;border-color:var(--good);animation:pop .35s}
+.tile-pic.soft,.opt.soft{background:var(--soft);opacity:.55;animation:wiggle .4s}
+@keyframes wiggle{0%,100%{translate:0}25%{translate:-7px}75%{translate:7px}}
+@keyframes pop{50%{transform:scale(1.05)}}
+.opts{display:flex;flex-direction:column;gap:12px;width:100%;max-width:640px}
+.opts.row-opts{flex-direction:row;flex-wrap:wrap;justify-content:center}
+.opts.row-opts .opt{flex:1;min-width:150px}
+.opt{background:var(--tile);color:var(--tileInk);border-radius:18px;font-size:26px;font-weight:800;min-height:72px;padding:12px 18px;box-shadow:0 5px 0 rgba(0,0,0,.25);border:4px solid transparent}
+.fb{min-height:56px;display:flex;align-items:center;justify-content:center;text-align:center}
+.fb>div{border-radius:16px;padding:10px 18px;font-size:22px;font-weight:700}
+.fb-good{background:rgba(95,211,141,.18);color:#c9f5d9}
+.fb-soft{background:rgba(205,180,219,.18);color:#eadcf2}
+.fb-info{background:rgba(126,200,227,.15);color:#d6f0fa}
+.heard{font-style:italic;font-weight:600;color:var(--accent)}
+.btn.mic{background:var(--pink);color:#3a0d1b;font-size:26px;padding:16px 30px}
+.btn.mic.on{animation:pulse2 1s infinite}
+@keyframes pulse2{50%{box-shadow:0 0 0 14px rgba(255,143,171,.25)}}
+/* spelling */
+.spell-line{display:flex;gap:6px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.prefix{font-size:34px;font-weight:800;margin-right:8px;color:var(--muted)}
+.slot{width:48px;height:62px;border-bottom:5px solid var(--muted);font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.slot.filled{border-color:var(--accent)}
+.slot.warn{border-color:var(--orange);color:var(--orange)}
+.keys{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:820px}
+.key{background:var(--tile);color:var(--tileInk);border-radius:14px;font-size:32px;font-weight:800;min-width:66px;min-height:66px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.key:disabled{opacity:.25}
+.key.acc{background:#ffe3b3;min-width:60px}
+.key.del{background:var(--panel2);color:var(--ink)}
+/* sentence builder */
+.build-line{min-height:82px;width:100%;max-width:860px;border-bottom:4px dashed var(--panel2);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:8px}
+.wtiles{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:860px}
+.wtile{background:var(--tile);color:var(--tileInk);border-radius:14px;font-size:28px;font-weight:800;min-height:62px;min-width:62px;padding:8px 18px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.wtile:disabled{opacity:.2}
+.wtile.placed{background:#ffe3b3}
+.blank{display:inline-block;min-width:110px;border-bottom:5px solid var(--accent);color:var(--accent);margin:0 6px}
+.blank.good{color:var(--good);border-color:var(--good)}
+.fill-line{color:var(--ink)}
+/* pattern */
+.pattern-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;width:100%}
+.pgroup{background:var(--panel);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px;border-top:8px solid var(--blue)}
+.pgroup.c1{border-top-color:var(--pink)}.pgroup.c2{border-top-color:var(--good)}.pgroup.c3{border-top-color:var(--accent)}
+.pex{background:var(--tile);color:var(--tileInk);border-radius:16px;padding:8px 10px;display:flex;align-items:center;gap:10px;min-height:84px}
+.pex .es{font-size:22px;text-align:left;color:var(--tileInk)}
+.hl{color:#c2410c;background:#ffe3b3;border-radius:5px;padding:0 1px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.c0 .hl{color:#1d4ed8;background:#dbeafe}.c1 .hl{color:#be185d;background:#fce7f3}.c2 .hl{color:#15803d;background:#dcfce7}
+.pattern-card{background:var(--tile);color:var(--tileInk);border-radius:28px;padding:30px;max-width:720px;width:100%;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.25);border:5px dashed var(--accent)}
+.pc-badge{font-size:22px;font-weight:800;color:#b45309}
+.pc-text{font-size:clamp(28px,4.4vw,40px);font-weight:900;margin-top:10px;line-height:1.35}
+.pattern-card .en{color:#3d6f91;font-size:18px}
+/* dialogue */
+.scene{font-size:54px}
+.chat{display:flex;flex-direction:column;gap:12px;width:100%;max-width:820px}
+.bubble-row{display:flex;gap:12px;align-items:flex-end;text-align:left;width:100%}
+.bubble-row.right{flex-direction:row-reverse;text-align:right}
+.who{display:flex;flex-direction:column;align-items:center;font-size:44px;min-width:76px;line-height:1}
+.who small{font-size:14px;color:var(--muted);margin-top:4px}
+.bubble{background:var(--tile);color:var(--tileInk);border-radius:20px;padding:12px 18px;font-size:23px;font-weight:700;max-width:78%}
+.bubble .en{color:#3d6f91}
+.bubble-row.right .bubble{background:#ffe3b3}
+.bubble-row.speaking .bubble{outline:4px solid var(--blue)}
+/* end of lesson */
+.celebrate-emoji{font-size:96px;animation:pop 1s}
+.stars{font-size:72px;letter-spacing:10px;color:var(--panel2)}
+.stars span{display:inline-block}
+.stars span.on{color:var(--accent);animation:starIn .6s both}
+@keyframes starIn{0%{transform:scale(0) rotate(-90deg)}80%{transform:scale(1.25)}100%{transform:scale(1)}}
+.unlock{font-size:22px;font-weight:800;color:var(--accent)}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}
+.confetti span{position:absolute;top:-60px;animation:fall 3.2s ease-in forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(540deg);opacity:.7}}
+.setlist{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.setpill{background:var(--panel2);border-radius:999px;padding:8px 14px;font-size:18px;font-weight:700;opacity:.6}
+.setpill.done{background:#2f5a4f;opacity:1}.setpill.now{outline:3px solid var(--accent);opacity:1}
+/* parent */
+.pcard{gap:10px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;font-size:18px}
+.stats>div{background:var(--panel2);border-radius:14px;padding:10px 12px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:130px;padding:8px 0}
+.bar-wrap{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch}
+.bar-wrap div{background:var(--blue);border-radius:6px 6px 0 0;min-height:3px}
+.bar-wrap div.goal{background:var(--good)}
+.bar-num{font-size:12px;text-align:center;color:var(--muted)}
+.bars-labels{display:flex;gap:6px;font-size:12px;color:var(--muted)}.bars-labels span{flex:1;text-align:center}
+.trouble{display:flex;flex-wrap:wrap;gap:8px}
+.trouble span{background:var(--panel2);border-radius:12px;padding:6px 12px;font-size:18px;font-weight:700}
+.trouble i{color:var(--blue);font-weight:500}
+.trouble small{color:var(--muted)}
+
+/* ---------- pictures (sizes cascade in em from .pic) ---------- */
+.pic{font-size:120px;line-height:1;display:flex;align-items:center;justify-content:center;gap:.08em;max-width:100%}
+.pic.hero{font-size:150px}
+.pic.hero.sm{font-size:110px}
+.pic.tile{font-size:96px}
+.pic.tile.sm{font-size:64px}
+.pic.multi>*{font-size:.62em}
+.emo{display:inline-block;font-family:"Apple Color Emoji","Noto Color Emoji","Segoe UI Emoji",sans-serif;white-space:nowrap}
+.emo.g1{font-size:1em}.emo.g2{font-size:.72em}.emo.g3{font-size:.54em}.emo.g4{font-size:.42em}
+svg.shape{width:1.25em;height:1.25em;display:block}
+.rep{display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:center;max-width:3.2em;gap:.04em}
+.rep .ri{font-size:.5em}
+.rep.n1 .ri{font-size:.9em}.rep.n2{max-width:2.6em}.rep.n2 .ri{font-size:.6em}
+.rep.many{max-width:3.4em}.rep.many .ri{font-size:.34em}
+.rep .ri svg.shape{width:1.25em;height:1.25em}
+.size{display:inline-flex;align-items:flex-end;gap:.12em}
+.size .sz-s{font-size:.42em}
+.size .off{opacity:.28;filter:grayscale(.7)}
+.size .on{filter:drop-shadow(0 0 .06em #ffb84d)}
+.lens{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0}
+.lens svg.shape{width:1.5em;height:.75em}
+.lens .off{opacity:.3}
+.numb{font-size:.8em;font-weight:900;color:#2f6fde;background:#e5efff;border-radius:.2em;padding:.05em .25em;min-width:1em;text-align:center;font-family:-apple-system,Roboto,sans-serif}
+.week{display:inline-flex;gap:.05em}
+.week span{font-size:.24em;font-weight:900;width:1.5em;height:1.7em;border-radius:.3em;background:#e8e2d4;color:#8b8172;display:flex;align-items:center;justify-content:center;font-family:-apple-system,Roboto,sans-serif}
+.week span.on{background:#ffb84d;color:#2a1d05;transform:scale(1.25)}
+.fam{display:inline-flex;flex-direction:column;align-items:center;gap:.04em}
+.fam .fr{display:flex;gap:.04em;align-items:flex-end}
+.fam .fm{font-size:.22em;opacity:.3;font-family:"Apple Color Emoji","Noto Color Emoji",sans-serif;position:relative}
+.fam .fm.on{opacity:1;font-size:.34em;filter:drop-shadow(0 0 .08em #ffb84d)}
+.fam .fm.me::after{content:"⭐";position:absolute;top:-.35em;right:-.2em;font-size:.45em}
+.pos{position:relative;display:inline-flex;align-items:flex-end;justify-content:center}
+.pos .pb{position:relative;z-index:1}
+.pos .pa{position:absolute;font-size:.5em;z-index:2;left:50%;transform:translateX(-50%)}
+.pos.on{padding-top:.42em}.pos.on .pa{top:.62em}.pos.on.svgb .pa{top:.58em}
+.pos.under .pa{bottom:.02em;font-size:.38em}
+.pos.in .pa{top:-.18em;z-index:0}.pos.in{padding-top:.2em}
+.pos.next{gap:.05em}.pos.next .pa{position:static;transform:none;font-size:.6em}
+.hero-card .pic.multi>*{font-size:.66em}
+@media (orientation:landscape){
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr));max-width:1040px}
+  .tiles.n2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:600px}
+  .tiles.n3{grid-template-columns:repeat(3,minmax(0,1fr));max-width:800px}
+  .tile-pic{min-height:180px}
+  .pic.hero{font-size:120px}
+  .pic.tile{font-size:84px}
+  .stage{gap:10px}
+}
+@media (max-height:700px){ .pic.hero{font-size:96px} .tile-pic{min-height:150px} .pic.tile{font-size:72px} }
+
+/* layout polish after screenshot review */
+.stage{justify-content:flex-start;padding-top:min(6vh,64px)}
+.welcome{margin-top:auto;padding:28px 10px 10px;text-align:center;opacity:.9}
+.welcome-pics{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.welcome-steps{font-size:28px;margin-top:8px;letter-spacing:8px;opacity:.7}
+.welcome-text{color:var(--muted);font-size:20px;font-weight:700;margin-top:4px}
+@media (orientation:portrait){
+  .tile-pic{min-height:clamp(200px,21vh,280px)}
+  .pic.tile{font-size:108px}
+  .tile-pic .fam{font-size:1.35em}
+}
+@media (orientation:landscape){ .tile-pic .fam{font-size:1.1em} .stage{padding-top:min(3vh,24px)} .tile-pic{min-height:clamp(180px,30vh,260px)} }
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* Paso a Paso — core engine: content loading, lesson generation, spaced review, answer checking.
+   Pure JavaScript with no DOM access, so it runs both in the browser and in Node (for tests). */
+(function () {
+'use strict';
+const ROOT = typeof globalThis !== 'undefined' ? globalThis : this;
+
+/* ---------- seeded random ---------- */
+function rng(seed) {
+  let a = (seed >>> 0) || 1;
+  return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function shuffle(a, r) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function sample(a, n, r) { return shuffle(a, r).slice(0, n); }
+function uniqBy(a, f) { const s = new Set(); return a.filter(x => { const k = f(x); if (s.has(k)) return false; s.add(k); return true; }); }
+
+/* ---------- text helpers ---------- */
+function stripAccents(s) { return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+function norm(s) { return stripAccents(String(s).toLowerCase()).replace(/[¿¡?!.,;:"“”'’«»()…\-–—]/g, ' ').replace(/\s+/g, ' ').trim(); }
+const NUMS = ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte'];
+const VEINTI = ['veinte', 'veintiuno', 'veintidós', 'veintitrés', 'veinticuatro', 'veinticinco', 'veintiséis', 'veintisiete', 'veintiocho', 'veintinueve'];
+const TENS = { 3: 'treinta', 4: 'cuarenta', 5: 'cincuenta', 6: 'sesenta', 7: 'setenta', 8: 'ochenta', 9: 'noventa' };
+function numWord(n) {
+  if (n <= 20) return NUMS[n];
+  if (n < 30) return VEINTI[n - 20];
+  if (n === 100) return 'cien';
+  const t = Math.floor(n / 10), u = n % 10;
+  return TENS[t] + (u ? ' y ' + NUMS[u] : '');
+}
+function digitsToWords(s) { return String(s).replace(/\d+/g, d => (+d <= 100 ? numWord(+d) : d)); }
+function lev(a, b) {
+  const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = new Array(n + 1), cur = new Array(n + 1);
+  for (let j = 0; j <= n; j++) prev[j] = j;
+  for (let i = 1; i <= m; i++) { cur[0] = i; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); const t = prev; prev = cur; cur = t; }
+  return prev[n];
+}
+function similarity(a, b) { a = norm(a); b = norm(b); if (a === b) return 1; const m = Math.max(a.length, b.length); return m ? 1 - lev(a, b) / m : 1; }
+/* Forgiving speech comparison: ignores accents, case and punctuation, accepts digits for number words,
+   accepts small differences, and accepts the target appearing inside a longer phrase. */
+function speechMatch(heardList, target) {
+  let best = 0, heard = '';
+  const nt = norm(digitsToWords(target)), tw = nt.split(' ');
+  (heardList || []).forEach(h => {
+    const nh = norm(digitsToWords(h));
+    let sc = similarity(nh, nt);
+    if (nt && (' ' + nh + ' ').indexOf(' ' + nt + ' ') >= 0) sc = Math.max(sc, 0.95);
+    const hw = new Set(nh.split(' '));
+    const overlap = tw.filter(w => hw.has(w)).length / tw.length;
+    sc = Math.max(sc, overlap * 0.9);
+    if (sc > best) { best = sc; heard = h; }
+  });
+  const need = nt.length <= 5 ? 0.5 : 0.6;
+  return { pass: best >= need, score: Math.round(best * 100) / 100, heard };
+}
+
+/* ---------- content model ---------- */
+const ARTICLES = ['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas'];
+const ACCENT_KEYS = ['á', 'é', 'í', 'ó', 'ú', 'ñ', '¿', '?', '¡', '!'];
+const CAST = {
+  S: { name: 'Sofía', pic: '👧🏽', pitch: 1.25 },
+  M: { name: 'Mateo', pic: '👦🏻', pitch: 0.9 },
+  V: { name: 'Valentina', pic: '👧🏼', pitch: 1.15 },
+  L: { name: 'Lucas', pic: '👦🏾', pitch: 0.8 },
+  P: { name: 'la maestra', pic: '👩🏽‍🏫', pitch: 1.05 },
+  A: { name: 'la abuela', pic: '👵🏽', pitch: 1.0 },
+  D: { name: 'papá', pic: '👨🏻', pitch: 0.75 },
+  E: { name: 'mamá', pic: '👩🏻', pitch: 1.1 },
+  W: { name: 'el mesero', pic: '🤵🏽', pitch: 0.85 },
+  N: { name: 'la enfermera', pic: '👩🏻‍⚕️', pitch: 1.05 },
+  T: { name: 'la vendedora', pic: '👩🏾‍💼', pitch: 1.1 },
+  C: { name: 'el entrenador', pic: '🧔🏽', pitch: 0.8 }
+};
+function picCat(pic) {
+  if (/^svg:blob/.test(pic)) return 'color';
+  if (/^(size:|len:)/.test(pic)) return 'size';
+  if (/^fam:/.test(pic)) return 'fam';
+  if (/^pos:/.test(pic)) return 'pos';
+  if (/^clock:/.test(pic)) return 'clock';
+  if (/^week:/.test(pic)) return 'week';
+  if (/^(num:|\d+\*)/.test(pic)) return 'count';
+  if (/svg:/.test(pic)) return 'thing';
+  return 'emoji';
+}
+function parseItem(s, extra) {
+  let it;
+  if (typeof s === 'string') { const p = s.split('|').map(x => x.trim()); it = { es: p[0], pic: p[1] || '', en: p[2] || '', alt: p[3] ? p[3].split('||').map(x => x.trim()) : [] }; }
+  else it = Object.assign({ alt: [] }, s);
+  const words = it.es.replace(/[¿¡?!.,]/g, ' ').trim().split(/\s+/);
+  const core = words.length === 2 && ARTICLES.indexOf(words[0].toLowerCase()) >= 0 ? words.slice(1) : words;
+  it.kind = core.length === 1 ? 'word' : /[.?!]$/.test(it.es) ? 'sentence' : 'phrase';
+  it.say = it.say || it.es;
+  it.cat = picCat(it.pic);
+  return Object.assign(it, extra || {});
+}
+function parseFill(s, extra) {
+  const p = s.split('|').map(x => x.trim());
+  const m = p[0].match(/^(.*)\[(.+?)\](.*)$/);
+  if (!m) throw new Error('fill needs [answer]: ' + s);
+  const answer = m[2], wrong = (p[3] || '').split(',').map(x => x.trim()).filter(Boolean);
+  return Object.assign({ es: m[1] + answer + m[3], before: m[1], after: m[3], answer, wrong, pic: p[1] || '', en: p[2] || '', say: m[1] + answer + m[3] }, extra || {});
+}
+function parseHL(s) { // "[el] gato|🐱" -> {es:'el gato', html parts, pic}
+  const p = s.split('|').map(x => x.trim());
+  return { es: p[0].replace(/[\[\]]/g, ''), marked: p[0], pic: p[1] || '', en: p[2] || '' };
+}
+function parseLine(s) { const p = s.split('|').map(x => x.trim()); return { who: p[0], es: p[1], en: p[2] || '', say: p[1] }; }
+function parseReply(s, defWho) {
+  const p = s.split('|').map(x => x.trim());
+  let prompt = p[0], who = defWho;
+  const m = prompt.match(/^([A-Z])>\s*(.*)$/); if (m) { who = m[1]; prompt = m[2]; }
+  return { who, prompt, answer: p[1], wrong: (p[2] || '').split(';').map(x => x.trim()).filter(Boolean), en: p[3] || '', pic: p[4] || '', say: prompt };
+}
+
+const SL = {
+  units: [], unitByN: {}, lessons: [], lessonById: {}, itemsByEs: {}, outline: [],
+  rng, shuffle, sample, norm, stripAccents, similarity, speechMatch, numWord, digitsToWords, lev,
+  ARTICLES, ACCENT_KEYS, CAST, parseItem, parseFill
+};
+
+function loadContent(rawUnits, outline) {
+  SL.units = []; SL.unitByN = {}; SL.lessons = []; SL.lessonById = {}; SL.itemsByEs = {}; SL.outline = outline || [];
+  const byN = {}; (rawUnits || []).forEach(u => { byN[u.n] = u; });
+  const total = Math.max(SL.outline.length, ...Object.keys(byN).map(Number), 0);
+  for (let n = 1; n <= total; n++) {
+    const o = SL.outline[n - 1] || { n, title: 'Unidad ' + n, icon: '⭐', lessons: [] };
+    const raw = byN[n];
+    const unit = { n, id: 'u' + n, title: (raw && raw.title) || o.title, icon: (raw && raw.icon) || o.icon, theme: (raw && raw.theme) || o.theme || '',
+      grammar: (raw && raw.grammar) || o.grammar || '', built: !!raw, lessons: [] };
+    const srcLessons = raw ? raw.lessons : o.lessons;
+    srcLessons.forEach((rl, i) => {
+      const ol = (o.lessons || [])[i] || {};
+      const L = { id: 'u' + n + 'l' + (i + 1), unit: n, idx: i, title: rl.title || ol.title, icon: rl.icon || ol.icon || unit.icon,
+        goal: rl.goal || ol.goal || '', built: !!raw, vocab: ol.vocab || rl.vocab || '' };
+      if (raw) {
+        L.items = (rl.items || []).map(s => parseItem(s, { lid: L.id, unit: n }));
+        L.fills = (rl.fills || []).map(s => parseFill(s, { lid: L.id, unit: n }));
+        L.review = rl.review || [];
+        if (rl.pattern) {
+          const pt = rl.pattern;
+          L.pattern = { title: pt.title || '', groups: pt.groups.map(g => g.map(parseHL)), quiz: (pt.quiz || []).map(s => parseFill(s, { lid: L.id, unit: n })), card: pt.card, en: pt.en || '' };
+        }
+        if (rl.dialogue) {
+          const d = rl.dialogue, lines = d.lines.map(parseLine);
+          L.dialogue = { scene: d.scene || '', lines, replies: (d.replies || []).map(s => parseReply(s, lines[0].who)) };
+        }
+        L.items.forEach(it => { if (!SL.itemsByEs[it.es]) SL.itemsByEs[it.es] = it; });
+        SL.lessons.push(L); SL.lessonById[L.id] = L;
+      }
+      unit.lessons.push(L);
+    });
+    SL.units.push(unit); SL.unitByN[n] = unit;
+  }
+  SL.lessons.forEach((L, i) => { L.flat = i; });
+  return SL;
+}
+
+/* all items of a unit (deduped by Spanish text), optionally only up to a lesson index */
+function unitPool(n, uptoIdx) {
+  const u = SL.unitByN[n]; if (!u || !u.built) return [];
+  let items = [];
+  u.lessons.forEach((L, i) => { if (uptoIdx === undefined || i <= uptoIdx) items = items.concat(L.items); });
+  if (uptoIdx !== undefined && uniqBy(items, x => x.es).length < 6) u.lessons.forEach((L, i) => { if (i > uptoIdx) items = items.concat(L.items); });
+  return uniqBy(items, x => x.es);
+}
+
+/* choose distractors: never the same text or the same picture; prefer same picture type and same kind */
+function pickDistractors(target, pool, n, r, preferLid) {
+  const cand = pool.filter(it => it.es !== target.es && norm(it.es) !== norm(target.es) && it.pic !== target.pic);
+  const tiers = [
+    it => it.cat === target.cat && it.kind === target.kind && it.lid === preferLid,
+    it => it.cat === target.cat && it.kind === target.kind,
+    it => it.cat === target.cat,
+    it => it.kind === target.kind,
+    () => true
+  ];
+  const out = [], pics = new Set([target.pic]), texts = new Set([norm(target.es)]);
+  for (const t of tiers) {
+    for (const it of shuffle(cand.filter(t), r)) {
+      if (out.length >= n) break;
+      if (pics.has(it.pic) || texts.has(norm(it.es))) continue;
+      out.push(it); pics.add(it.pic); texts.add(norm(it.es));
+    }
+    if (out.length >= n) break;
+  }
+  return out;
+}
+function exChoice(type, item, pool, r, preferLid, n) {
+  n = n || 4;
+  const ds = pickDistractors(item, pool, n - 1, r, preferLid);
+  if (ds.length < 1) return null;
+  const choices = shuffle([item].concat(ds), r);
+  return { type, item, say: item.say, choices, answer: choices.indexOf(item), graded: true };
+}
+
+/* ---------- spelling ---------- */
+function spellTarget(item) {
+  const parts = item.es.trim().split(/\s+/);
+  let prefix = '', target;
+  if (parts.length === 2 && ARTICLES.indexOf(parts[0].toLowerCase()) >= 0) { prefix = parts[0] + ' '; target = parts[1]; }
+  else if (parts.length === 1) target = parts[0];
+  else return null;
+  if (/[A-ZÁÉÍÓÚÑ]/.test(target.replace(/^[¡¿]/, '').charAt(0)) && item.kind === 'word' && !/^[¡¿]/.test(target) && parts.length === 1 && item.properNoun) return null;
+  target = target.toLowerCase();
+  if (target.length > 11 || !/^[a-záéíóúñü¿?¡!]+$/.test(target)) return null;
+  return { prefix: prefix.toLowerCase(), target };
+}
+const FILLER = 'aeiourlnstcdmp';
+function exSpell(item, r) {
+  const st = spellTarget(item); if (!st) return null;
+  const letters = st.target.split('').filter(c => ACCENT_KEYS.indexOf(c) < 0);
+  const extra = []; let guard = 0;
+  while (extra.length < 2 && guard++ < 50) { const c = FILLER[Math.floor(r() * FILLER.length)]; if (letters.indexOf(c) < 0 && extra.indexOf(c) < 0) extra.push(c); }
+  let tiles = shuffle(letters.concat(extra), r);
+  if (tiles.join('') === letters.join('') + extra.join('')) tiles = tiles.reverse();
+  return { type: 'spell', item, say: item.say, prefix: st.prefix, target: st.target, tiles, graded: true };
+}
+
+/* ---------- sentence builder ---------- */
+function tokenize(s) {
+  let t = String(s).trim().replace(/\.$/, '');
+  t = t.replace(/([¿¡])/g, '$1 ').replace(/([?!])/g, ' $1 ');
+  return t.split(/\s+/).filter(Boolean);
+}
+function joinTokens(tokens) { return tokens.join(' ').replace(/([¿¡]) /g, '$1').replace(/ ([?!])/g, '$1'); }
+const ADJ = ['rojo', 'negro', 'blanco', 'amarillo', 'anaranjado', 'morado', 'rosado', 'pequeño', 'alto', 'bajo', 'largo', 'corto', 'nuevo', 'viejo', 'bonito', 'feo', 'lento', 'rápido', 'limpio', 'sucio', 'simpático', 'divertido', 'cansado', 'contento', 'enojado', 'nervioso', 'aburrido', 'enfermo', 'delicioso', 'rico', 'emocionado', 'mojado', 'lleno', 'ocupado', 'preocupado', 'listo', 'nublado', 'favorito', 'mucho', 'cómodo', 'caro', 'barato', 'tranquilo', 'perezoso', 'gordo', 'flaco', 'hermoso', 'blanco', 'nuestro', 'primero', 'segundo', 'tercero', 'último'];
+const INVAR = ['verde', 'azul', 'gris', 'café', 'grande', 'feliz', 'inteligente', 'amable', 'fuerte', 'triste', 'interesante', 'difícil', 'fácil', 'joven', 'alegre'];
+function adjVariants(w) {
+  const lw = w.toLowerCase(), out = [];
+  for (const a of ADJ) {
+    const stem = a.slice(0, -1), forms = [a, stem + 'a', a + 's', stem + 'as'];
+    const i = forms.indexOf(lw); if (i >= 0) { out.push(forms[[1, 0, 3, 2][i]]); out.push(forms[[2, 3, 0, 1][i]]); }
+  }
+  for (const a of INVAR) {
+    const pl = /[aeiouáéíóú]$/.test(a) ? a + 's' : (a === 'feliz' ? 'felices' : a === 'joven' ? 'jóvenes' : a + 'es');
+    if (lw === a) out.push(pl); else if (lw === pl) out.push(a);
+  }
+  return out;
+}
+const SWAP = { el: 'la', la: 'el', los: 'las', las: 'los', un: 'una', una: 'un', es: 'son', son: 'es', está: 'están', están: 'está', mi: 'mis', mis: 'mi', gusta: 'gustan', gustan: 'gusta', duele: 'duelen', duelen: 'duele', cuesta: 'cuestan', cuestan: 'cuesta', hace: 'es', al: 'a la', del: 'de la', este: 'esta', esta: 'este' };
+function exBuild(item, r, pool) {
+  const tokens = tokenize(item.es);
+  const words = tokens.filter(t => !/^[¿¡?!]$/.test(t));
+  if (words.length < 2 || words.length > 8) return null;
+  const lowerSet = new Set(tokens.map(t => t.toLowerCase().replace(/,$/, '')));
+  let cands = [];
+  tokens.forEach((t, i) => {
+    const bare = t.replace(/,$/, ''), lw = bare.toLowerCase();
+    const vs = [];
+    if (SWAP[lw] && SWAP[lw].indexOf(' ') < 0) vs.push(SWAP[lw]);
+    adjVariants(bare).forEach(v => vs.push(v));
+    vs.forEach(v => { if (!lowerSet.has(v)) cands.push(i === 0 ? v.charAt(0).toUpperCase() + v.slice(1) : v); });
+  });
+  cands = uniqBy(shuffle(cands, r), x => x.toLowerCase()).slice(0, 2);
+  if (!cands.length && pool) {
+    const w = shuffle(pool.filter(p => p.kind === 'word'), r).map(p => p.es.split(' ').pop().replace(/[¡!¿?]/g, '').toLowerCase()).find(x => !lowerSet.has(x));
+    if (w) cands.push(w);
+  }
+  let tiles = shuffle(tokens.concat(cands), r);
+  let g = 0; while (joinTokens(tiles.slice(0, tokens.length)) === joinTokens(tokens) && g++ < 10) tiles = shuffle(tiles, r);
+  const answers = [joinTokens(tokens)].concat((item.alt || []).map(a => joinTokens(tokenize(a))));
+  return { type: 'build', item, say: item.say, tokens, tiles, answers, period: /\.$/.test(item.es.trim()), graded: true };
+}
+function checkBuild(ex, placedTokens) { return ex.answers.indexOf(joinTokens(placedTokens)) >= 0; }
+
+function exFill(f, r) {
+  const opts = shuffle(uniqBy([f.answer].concat(f.wrong), x => x), r);
+  return { type: 'fill', item: f, say: f.say, options: opts, answer: opts.indexOf(f.answer), graded: true };
+}
+
+/* ---------- lesson generation ---------- */
+function chunk(a, n) { const out = []; for (let i = 0; i < a.length; i += n) out.push(a.slice(i, i + n)); return out; }
+function buildLesson(L, r) {
+  r = r || rng(Date.now());
+  const pool = unitPool(L.unit, L.idx), items = L.items, sets = [];
+  // 1) look & listen: meet 3 new things, then find them by ear
+  const A = [];
+  chunk(items, 3).forEach(ch => {
+    ch.forEach(it => A.push({ type: 'intro', item: it, say: it.say }));
+    shuffle(ch, r).forEach(it => { const e = exChoice('listen', it, pool, r, L.id); if (e) A.push(e); });
+  });
+  sets.push({ key: 'listen', name: 'Mira y escucha', icon: '🎧', ex: A });
+  // 2) read: read it, tap the picture; see a picture, pick the words; plus review from earlier lessons
+  const B = [];
+  sample(items, Math.min(6, items.length), r).forEach(it => { const e = exChoice('read', it, pool, r, L.id); if (e) B.push(e); });
+  const longer = items.filter(it => it.kind !== 'word');
+  sample(longer.length >= 2 ? longer : items, 3, r).forEach(it => { const e = exChoice('pick', it, pool, r, L.id, 3); if (e) B.push(e); });
+  const earlier = unitPool(L.unit, L.idx - 1).filter(it => it.lid !== L.id && !items.some(x => x.es === it.es));
+  const rev = L.review.map(es => SL.itemsByEs[es]).filter(Boolean).concat(sample(earlier, 2, r));
+  uniqBy(rev, x => x.es).slice(0, 3).forEach((it, i) => { const e = exChoice(i % 2 ? 'read' : 'listen', it, unitPool(it.unit), r, it.lid); if (e) { e.review = true; B.push(e); } });
+  sets.push({ key: 'read', name: 'Lee', icon: '📖', ex: shuffle(B, r) });
+  // 3) speak & write
+  const C = [];
+  const sp = longer.length >= 3 ? sample(longer, 3, r) : sample(items, 3, r);
+  sp.forEach(it => C.push({ type: 'speak', item: it, say: it.say }));
+  const spellable = items.filter(it => spellTarget(it));
+  const accented = spellable.filter(it => /[áéíóúñ¿¡]/.test(it.es));
+  uniqBy(sample(accented, 2, r).concat(sample(spellable, 3, r)), x => x.es).slice(0, 3).forEach(it => { const e = exSpell(it, r); if (e) C.push(e); });
+  const buildable = items.filter(it => it.kind !== 'word');
+  sample(buildable, 3, r).forEach(it => { const e = exBuild(it, r, pool); if (e) C.push(e); });
+  if (!L.pattern) L.fills.forEach(f => C.push(exFill(f, r)));
+  sets.push({ key: 'speak', name: 'Habla y escribe', icon: '🗣️', ex: C });
+  // 4) discover a pattern
+  if (L.pattern) {
+    const D = [{ type: 'patternShow', pattern: L.pattern, say: L.pattern.groups.map(g => g.map(x => x.es).join(', ')).join('. ') }];
+    L.pattern.quiz.forEach(q => { const e = exFill(q, r); e.patternQuiz = true; D.push(e); });
+    D.push({ type: 'patternCard', pattern: L.pattern, say: L.pattern.groups.map(g => g[0].es).join('. ') });
+    L.fills.forEach(f => D.push(exFill(f, r)));
+    sets.push({ key: 'pattern', name: 'Descubre', icon: '🧩', ex: D });
+  }
+  // 5) conversation
+  if (L.dialogue) {
+    const E = [{ type: 'dialogue', dialogue: L.dialogue, say: L.dialogue.lines.map(l => l.es).join(' ') }];
+    L.dialogue.replies.forEach(rp => {
+      const opts = shuffle([rp.answer].concat(rp.wrong), r);
+      E.push({ type: 'reply', reply: rp, item: rp, say: rp.say, options: opts, answer: opts.indexOf(rp.answer), graded: true });
+    });
+    sets.push({ key: 'talk', name: 'Conversa', icon: '💬', ex: E });
+  }
+  return { id: L.id, sets: sets.filter(s => s.ex.length) };
+}
+/* a missed item comes back once more at the end of the same set */
+function retryOf(ex, r) {
+  if (ex.type === 'listen' || ex.type === 'read' || ex.type === 'pick') { const c = shuffle(ex.choices, r); return Object.assign({}, ex, { choices: c, answer: c.indexOf(ex.item), retry: true }); }
+  if (ex.type === 'fill' || ex.type === 'reply') { const o = shuffle(ex.options, r); return Object.assign({}, ex, { options: o, answer: o.indexOf(ex.type === 'fill' ? ex.item.answer : ex.reply.answer), retry: true }); }
+  if (ex.type === 'spell') return Object.assign({}, ex, { tiles: shuffle(ex.tiles, r), retry: true });
+  if (ex.type === 'build') return Object.assign({}, ex, { tiles: shuffle(ex.tiles, r), retry: true });
+  return null;
+}
+
+/* ---------- spaced review (Leitner boxes) ---------- */
+const INTERVALS = [0, 1, 2, 4, 7, 14, 30]; // days until next review for boxes 0..6
+function dayNum(d) { d = d || new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000); }
+function srsUpdate(card, ok, today) {
+  card = card || { box: 0, due: today, ok: 0, miss: 0, lapses: 0, first: today };
+  if (ok) { card.ok++; card.box = Math.min(6, card.box + 1); }
+  else { card.miss++; if (card.box > 1) card.lapses++; card.box = 1; }
+  card.due = today + INTERVALS[card.box];
+  card.last = today;
+  return card;
+}
+function dueKeys(cards, today) {
+  return Object.keys(cards || {}).filter(k => cards[k].due <= today && SL.itemsByEs[k])
+    .sort((a, b) => (cards[a].due - cards[b].due) || (cards[a].box - cards[b].box));
+}
+function buildReview(cards, today, r, max) {
+  r = r || rng(Date.now()); max = max || 6;
+  const keys = dueKeys(cards, today).slice(0, max), ex = [];
+  keys.forEach((k, i) => {
+    const it = SL.itemsByEs[k], box = cards[k].box, pool = unitPool(it.unit);
+    let e = null;
+    if (box >= 4 && it.kind !== 'word') e = exBuild(it, r, pool);
+    else if (box >= 3) e = exSpell(it, r) || exChoice('pick', it, pool, r, it.lid, 3);
+    else if (box === 2) e = exChoice(i % 2 ? 'pick' : 'read', it, pool, r, it.lid, i % 2 ? 3 : 4);
+    if (!e) e = exChoice('listen', it, pool, r, it.lid);
+    if (e) { e.review = true; ex.push(e); }
+  });
+  return ex.length ? { key: 'review', name: 'Repaso', icon: '🔁', ex } : null;
+}
+function troubleWords(cards, n) {
+  return Object.keys(cards || {}).filter(k => cards[k].miss >= 2 && cards[k].miss / (cards[k].ok + cards[k].miss) >= 0.3 && SL.itemsByEs[k])
+    .sort((a, b) => (cards[b].miss - cards[a].miss) || (cards[a].box - cards[b].box)).slice(0, n || 10);
+}
+function wordStats(cards) {
+  const ks = Object.keys(cards || {}); return { seen: ks.length, strong: ks.filter(k => cards[k].box >= 4).length };
+}
+
+/* ---------- scoring, unlocking, placement ---------- */
+const PASS = 0.8;
+function scoreResults(results) {
+  const g = results.filter(x => x.graded), ok = g.filter(x => x.firstTry).length;
+  const pct = g.length ? ok / g.length : 1;
+  return { graded: g.length, firstOk: ok, pct, pass: pct >= PASS, stars: pct >= 0.95 ? 3 : pct >= 0.88 ? 2 : pct >= PASS ? 1 : 0 };
+}
+function lessonDone(p, L) { return !!(p.lessons[L.id] && p.lessons[L.id].done); }
+function isUnlocked(p, L) {
+  if (p.unlockAll || L.unit < (p.startUnit || 1) || L.flat === 0) return true;
+  const prev = SL.lessons[L.flat - 1];
+  if (L.unit === (p.startUnit || 1) && L.idx === 0) return true;
+  return lessonDone(p, prev) || prev.unit < (p.startUnit || 1) && L.idx === 0;
+}
+function currentLesson(p) {
+  const start = SL.lessons.filter(L => L.unit >= (p.startUnit || 1));
+  for (const L of start) if (!lessonDone(p, L) && isUnlocked(p, L)) return L;
+  for (const L of SL.lessons) if (!lessonDone(p, L) && isUnlocked(p, L)) return L;
+  return SL.lessons[SL.lessons.length - 1];
+}
+function buildPlacement(targetUnit, r, n) {
+  r = r || rng(Date.now()); n = n || 10;
+  const items = SL.lessons.filter(L => L.unit < targetUnit).reduce((a, L) => a.concat(L.items), []);
+  const per = uniqBy(shuffle(items, r), x => x.es).slice(0, n);
+  return per.map((it, i) => exChoice(i % 2 ? 'read' : 'listen', it, unitPool(it.unit), r, it.lid)).filter(Boolean);
+}
+function seedPlaced(p, startUnit, today, r) {
+  r = r || rng(Date.now());
+  SL.lessons.filter(L => L.unit < startUnit).forEach(L => L.items.forEach(it => {
+    if (!p.cards[it.es]) p.cards[it.es] = { box: 2, due: today + 1 + Math.floor(r() * 10), ok: 1, miss: 0, lapses: 0, first: today, last: today, placed: true };
+  }));
+}
+
+Object.assign(SL, { loadContent, unitPool, pickDistractors, exChoice, exSpell, exBuild, exFill, spellTarget, tokenize, joinTokens, checkBuild,
+  buildLesson, retryOf, INTERVALS, dayNum, srsUpdate, dueKeys, buildReview, troubleWords, wordStats, PASS, scoreResults, lessonDone, isUnlocked,
+  currentLesson, buildPlacement, seedPlaced, adjVariants, ADJ, INVAR, picCat, chunk });
+
+if (typeof module !== 'undefined' && module.exports) module.exports = SL;
+ROOT.SL = SL;
+})();
+
+</script>
+<script>
+/* Paso a Paso — pictures. Every picture is an emoji or a tiny inline SVG drawn here (no image files).
+   Picture spec mini-language used by the content files:
+     "🐱"                plain emoji (one or several)
+     "svg:cat:verde"     a drawn shape filled with a color (shapes below; colors by Spanish name, any gender/number form)
+     "3*🐱"              repeat a picture N times (also "3*svg:ball:rojo")
+     "a+b"               show pictures side by side
+     "size:big:🐶"       big one highlighted next to a faded small one ("size:small:🐶" the reverse)
+     "len:long:rojo"     a long pencil vs. a short one ("len:short:azul")
+     "clock:3:30"        clock face showing a time
+     "week:0"            week strip (L M M J V S D) with day N highlighted (0 = lunes)
+     "num:15"            big number badge                                                               */
+(function () {
+'use strict';
+const ROOT = typeof globalThis !== 'undefined' ? globalThis : this;
+const COLORS = { rojo: '#e63946', azul: '#2f6fde', verde: '#2a9d4f', amarillo: '#ffd23f', negro: '#26262b', blanco: '#ffffff',
+  anaranjado: '#f77f00', morado: '#7b2cbf', rosado: '#ff8fb8', gris: '#9aa3b2', 'café': '#8a5a2b' };
+function colorOf(name) {
+  name = String(name || '').toLowerCase();
+  if (COLORS[name]) return COLORS[name];
+  if (name.charAt(0) === '#') return name;
+  for (const k in COLORS) { const st = k.replace(/o$/, ''); if (name === k + 's' || name === k + 'es' || name === st + 'a' || name === st + 'as' || name === st + 'os') return COLORS[k]; }
+  return '#cccccc';
+}
+const O = 'stroke="#33302c" stroke-width="3" stroke-linejoin="round"';
+function eyes(c, y) { const e = c === COLORS.negro ? '#ffe066' : '#222'; return '<circle cx="39" cy="' + y + '" r="4" fill="' + e + '"/><circle cx="61" cy="' + y + '" r="4" fill="' + e + '"/>'; }
+const SHAPES = {
+  blob: c => '<path ' + O + ' fill="' + c + '" d="M50 10C63 9 69 21 79 23C91 27 93 41 87 52C82 61 91 71 82 81C73 91 60 84 50 88C38 92 27 87 21 78C12 69 9 58 15 48C20 39 11 29 21 21C30 13 39 12 50 10Z"/><circle cx="88" cy="16" r="6" fill="' + c + '" ' + O + '/>',
+  cat: c => '<path ' + O + ' fill="' + c + '" d="M20 46L26 12L44 30Q50 28 56 30L74 12L80 46Q86 60 78 74Q66 88 50 88Q34 88 22 74Q14 60 20 46Z"/>' + eyes(c, 52) +
+    '<path d="M46 62L54 62L50 67Z" fill="#ff8fb8" stroke="#33302c" stroke-width="1.5"/><path d="M50 67Q46 73 41 71M50 67Q54 73 59 71" fill="none" stroke="#33302c" stroke-width="2"/>' +
+    '<path d="M36 64L14 60M36 68L14 70M64 64L86 60M64 68L86 70" stroke="' + (c === COLORS.negro ? '#ddd' : '#33302c') + '" stroke-width="1.6"/>',
+  dog: c => '<ellipse cx="50" cy="54" rx="28" ry="31" fill="' + c + '" ' + O + '/><ellipse cx="22" cy="48" rx="10" ry="22" transform="rotate(18 22 48)" fill="' + c + '" ' + O + '/><ellipse cx="22" cy="48" rx="10" ry="22" transform="rotate(18 22 48)" fill="rgba(0,0,0,.22)"/>' +
+    '<ellipse cx="78" cy="48" rx="10" ry="22" transform="rotate(-18 78 48)" fill="' + c + '" ' + O + '/><ellipse cx="78" cy="48" rx="10" ry="22" transform="rotate(-18 78 48)" fill="rgba(0,0,0,.22)"/>' +
+    '<ellipse cx="50" cy="70" rx="15" ry="12" fill="rgba(255,255,255,.55)" stroke="#33302c" stroke-width="1.5"/><ellipse cx="50" cy="64" rx="6" ry="4.5" fill="#222"/>' + eyes(c, 50) + '<path d="M50 69Q50 76 44 77M50 69Q50 76 56 77" fill="none" stroke="#33302c" stroke-width="2"/>',
+  house: c => '<rect x="22" y="46" width="56" height="42" fill="' + c + '" ' + O + '/><path d="M12 50L50 16L88 50Z" fill="' + c + '" ' + O + '/><path d="M12 50L50 16L88 50Z" fill="rgba(0,0,0,.25)"/>' +
+    '<rect x="43" y="62" width="15" height="26" fill="#f6e7c8" stroke="#33302c" stroke-width="2"/><rect x="28" y="54" width="11" height="11" fill="#bfe3ff" stroke="#33302c" stroke-width="2"/><rect x="62" y="54" width="11" height="11" fill="#bfe3ff" stroke="#33302c" stroke-width="2"/>',
+  car: c => '<path ' + O + ' fill="' + c + '" d="M8 70L8 56Q8 50 16 49L28 47L38 32Q41 28 47 28L64 28Q70 28 73 33L81 47L88 49Q93 51 93 57L93 70Z"/><path d="M41 34L35 46L56 46L56 34ZM61 34L61 46L76 46L70 34Z" fill="#bfe3ff" stroke="#33302c" stroke-width="2"/>' +
+    '<circle cx="28" cy="72" r="10" fill="#222"/><circle cx="28" cy="72" r="4" fill="#ccc"/><circle cx="73" cy="72" r="10" fill="#222"/><circle cx="73" cy="72" r="4" fill="#ccc"/>',
+  ball: c => '<circle cx="50" cy="50" r="36" fill="' + c + '" ' + O + '/><path d="M16 42Q50 58 84 42M20 66Q50 78 80 66" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="5"/><path d="M16 42Q50 58 84 42M20 66Q50 78 80 66" fill="none" stroke="#33302c" stroke-width="1.2"/><circle cx="50" cy="50" r="36" fill="none" ' + O + '/>',
+  flower: c => '<path d="M50 56L50 95" stroke="#2a9d4f" stroke-width="5"/><path d="M50 80Q66 66 74 74Q64 86 50 80Z" fill="#2a9d4f" stroke="#33302c" stroke-width="2"/>' +
+    [0, 72, 144, 216, 288].map(a => { const x = 50 + 17 * Math.cos((a - 90) * Math.PI / 180), y = 36 + 17 * Math.sin((a - 90) * Math.PI / 180); return '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="13" fill="' + c + '" ' + O + '/>'; }).join('') +
+    '<circle cx="50" cy="36" r="10" fill="' + (c === COLORS.amarillo ? '#8a5a2b' : '#ffd23f') + '" ' + O + '/>',
+  shirt: c => '<path ' + O + ' fill="' + c + '" d="M32 16L42 12Q50 22 58 12L68 16L90 34L78 48L70 41L70 90L30 90L30 41L22 48L10 34Z"/><path d="M42 12Q50 22 58 12" fill="none" stroke="#33302c" stroke-width="3"/>',
+  dress: c => '<path ' + O + ' fill="' + c + '" d="M38 10L44 10Q50 18 56 10L62 10L64 34L58 42L82 90L18 90L42 42L36 34Z"/><path d="M40 42L60 42" stroke="#33302c" stroke-width="3"/>',
+  fish: c => '<path ' + O + ' fill="' + c + '" d="M70 50L94 32L90 50L94 68Z"/><ellipse cx="44" cy="50" rx="32" ry="21" fill="' + c + '" ' + O + '/><circle cx="26" cy="45" r="4" fill="' + (c === COLORS.negro ? '#ffe066' : '#222') + '"/><path d="M50 36Q58 50 50 64" fill="none" stroke="#33302c" stroke-width="2"/>',
+  bird: c => '<ellipse cx="46" cy="58" rx="28" ry="24" fill="' + c + '" ' + O + '/><circle cx="66" cy="36" r="15" fill="' + c + '" ' + O + '/><path d="M80 34L94 39L80 43Z" fill="#f4a261" stroke="#33302c" stroke-width="2"/>' +
+    '<circle cx="69" cy="33" r="3.5" fill="' + (c === COLORS.negro ? '#ffe066' : '#222') + '"/><path d="M30 52Q44 46 52 62Q38 72 30 52Z" fill="rgba(0,0,0,.2)" stroke="#33302c" stroke-width="2"/><path d="M40 82L38 92M52 82L54 92" stroke="#f4a261" stroke-width="3"/>',
+  book: c => '<rect x="22" y="12" width="58" height="76" rx="5" fill="' + c + '" ' + O + '/><rect x="22" y="12" width="12" height="76" rx="4" fill="rgba(0,0,0,.25)"/><rect x="74" y="16" width="8" height="68" fill="#fff" stroke="#33302c" stroke-width="2"/><rect x="42" y="28" width="26" height="10" rx="2" fill="rgba(255,255,255,.7)"/>',
+  apple: c => '<path ' + O + ' fill="' + c + '" d="M50 30Q36 18 24 30Q10 46 20 68Q30 90 44 88Q50 86 56 88Q70 90 80 68Q90 46 76 30Q64 18 50 30Z"/><path d="M50 30Q50 18 56 10" stroke="#6b3e1f" stroke-width="4" fill="none"/><path d="M54 18Q66 8 76 14Q66 26 54 18Z" fill="#2a9d4f" stroke="#33302c" stroke-width="2"/>',
+  balloon: c => '<ellipse cx="50" cy="40" rx="27" ry="32" fill="' + c + '" ' + O + '/><path d="M46 72L54 72L50 66Z" fill="' + c + '" ' + O + '/><path d="M50 72Q42 82 52 90Q58 96 50 100" fill="none" stroke="#555" stroke-width="2"/><ellipse cx="40" cy="28" rx="6" ry="9" fill="rgba(255,255,255,.5)"/>',
+  cap: c => '<path ' + O + ' fill="' + c + '" d="M18 62Q18 26 50 24Q82 26 82 62Z"/><path ' + O + ' fill="' + c + '" d="M60 62L96 62Q96 72 60 72Z"/><path d="M60 62L96 62Q96 72 60 72Z" fill="rgba(0,0,0,.2)"/><circle cx="50" cy="24" r="4" fill="' + c + '" ' + O + '/>',
+  chair: c => '<rect x="26" y="10" width="48" height="38" rx="5" fill="' + c + '" ' + O + '/><rect x="20" y="48" width="60" height="12" rx="3" fill="' + c + '" ' + O + '/><path d="M26 60L24 92M74 60L76 92M36 60L36 84M64 60L64 84" stroke="#33302c" stroke-width="5"/>',
+  board: c => '<rect x="8" y="16" width="84" height="58" rx="3" fill="#8a5a2b" stroke="#33302c" stroke-width="3"/><rect x="14" y="21" width="72" height="48" fill="' + c + '"/><path d="M22 34Q30 28 38 34T54 34M22 48L48 48M58 44Q66 38 74 46" stroke="#fff" stroke-width="2.5" fill="none"/><path d="M30 74L24 92M70 74L76 92" stroke="#33302c" stroke-width="4"/>',
+  desk: c => '<rect x="10" y="36" width="80" height="12" rx="2" fill="' + c + '" ' + O + '/><rect x="56" y="48" width="30" height="22" fill="' + c + '" ' + O + '/><path d="M16 48L16 90M84 70L84 90M60 70L60 90" stroke="#33302c" stroke-width="5"/><rect x="66" y="56" width="10" height="4" fill="#33302c"/>',
+  table: c => '<rect x="8" y="40" width="84" height="12" rx="3" fill="' + c + '" ' + O + '/><path d="M18 52L18 90M82 52L82 90" stroke="#33302c" stroke-width="6"/><path d="M18 52L18 90M82 52L82 90" stroke="' + c + '" stroke-width="3"/>',
+  fridge: c => '<rect x="26" y="6" width="48" height="88" rx="6" fill="' + c + '" ' + O + '/><path d="M26 38L74 38" stroke="#33302c" stroke-width="3"/><rect x="32" y="20" width="4" height="12" rx="2" fill="#33302c"/><rect x="32" y="46" width="4" height="18" rx="2" fill="#33302c"/>',
+  lamp: c => '<path d="M30 46L40 14L60 14L70 46Z" fill="' + c + '" ' + O + '/><path d="M50 46L50 86" stroke="#33302c" stroke-width="5"/><ellipse cx="50" cy="88" rx="20" ry="6" fill="#555" stroke="#33302c" stroke-width="2"/>',
+  club: c => '<path d="M70 8L36 80" stroke="#33302c" stroke-width="6" stroke-linecap="round"/><path d="M70 8L36 80" stroke="' + c + '" stroke-width="3" stroke-linecap="round"/><path d="M66 6L76 12L72 22L64 18Z" fill="#222"/><path d="M30 76Q30 90 44 90L58 90Q62 84 56 80L40 80Z" fill="#9aa3b2" ' + O + '/>',
+  golfball: c => '<circle cx="50" cy="50" r="30" fill="' + c + '" ' + O + '/>' + [[40, 38], [56, 36], [64, 50], [48, 52], [36, 56], [56, 64], [44, 68]].map(d => '<circle cx="' + d[0] + '" cy="' + d[1] + '" r="2.6" fill="rgba(0,0,0,.18)"/>').join(''),
+  pencil: (c, len) => { len = len || 70; const x0 = 50 - len / 2, x1 = x0 + len; return '<rect x="' + x0 + '" y="40" width="' + (len - 16) + '" height="20" fill="' + c + '" ' + O + '/><rect x="' + x0 + '" y="40" width="8" height="20" fill="#ff8fb8" ' + O + '/><path d="M' + (x1 - 16) + ' 40L' + x1 + ' 50L' + (x1 - 16) + ' 60Z" fill="#f6d7a7" ' + O + '/><path d="M' + (x1 - 5) + ' 47L' + x1 + ' 50L' + (x1 - 5) + ' 53Z" fill="#333"/>'; }
+};
+function svg(inner, cls) { return '<svg class="' + (cls || 'shape') + '" viewBox="0 0 100 100" aria-hidden="true">' + inner + '</svg>'; }
+function clockSVG(h, m) {
+  h = +h; m = +m || 0;
+  let s = '<circle cx="50" cy="50" r="44" fill="#fff" ' + O + '/>';
+  for (let i = 0; i < 12; i++) { const a = i * 30 * Math.PI / 180; s += '<line x1="' + (50 + 36 * Math.sin(a)).toFixed(1) + '" y1="' + (50 - 36 * Math.cos(a)).toFixed(1) + '" x2="' + (50 + 41 * Math.sin(a)).toFixed(1) + '" y2="' + (50 - 41 * Math.cos(a)).toFixed(1) + '" stroke="#33302c" stroke-width="' + (i % 3 ? 2 : 4) + '"/>'; }
+  const ha = ((h % 12) + m / 60) * 30 * Math.PI / 180, ma = m * 6 * Math.PI / 180;
+  s += '<line x1="50" y1="50" x2="' + (50 + 22 * Math.sin(ha)).toFixed(1) + '" y2="' + (50 - 22 * Math.cos(ha)).toFixed(1) + '" stroke="#2f6fde" stroke-width="7" stroke-linecap="round"/>';
+  s += '<line x1="50" y1="50" x2="' + (50 + 34 * Math.sin(ma)).toFixed(1) + '" y2="' + (50 - 34 * Math.cos(ma)).toFixed(1) + '" stroke="#e63946" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="50" r="4" fill="#33302c"/>';
+  return svg(s);
+}
+const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+function weekHTML(n) { n = String(n); return '<div class="week">' + DAYS.map((d, i) => '<span class="' + (n === 'a' || n.indexOf(String(i)) >= 0 ? 'on' : '') + '">' + d + '</span>').join('') + '</div>'; }
+const FAM = [ ['abuelo', '👴🏽'], ['abuela', '👵🏽'], null, ['papá', '👨🏽'], ['mamá', '👩🏽'], ['tío', '🧔🏻'], ['tía', '👩🏻‍🦰'], null,
+  ['yo', '🧒🏽'], ['hermano', '👦🏽'], ['hermana', '👧🏽'], ['primo', '👦🏻'], ['prima', '👧🏻'], ['mascota', '🐕'] ];
+function famHTML(roles) {
+  const on = roles.split(','), all = on.indexOf('all') >= 0;
+  let rows = [[]];
+  FAM.forEach(f => { if (!f) { rows.push([]); return; } rows[rows.length - 1].push('<span class="fm' + (all || on.indexOf(f[0]) >= 0 ? ' on' : '') + (f[0] === 'yo' ? ' me' : '') + '">' + f[1] + '</span>'); });
+  return '<span class="fam">' + rows.map(r => '<span class="fr">' + r.join('') + '</span>').join('') + '</span>';
+}
+function posHTML(rel, a, b) { return '<span class="pos ' + rel + (/^svg:/.test(b) ? ' svgb' : '') + '"><span class="pb">' + one(b) + '</span><span class="pa">' + one(a) + '</span></span>'; }
+function graphemes(s) {
+  if (typeof Intl !== 'undefined' && Intl.Segmenter) return Array.from(new Intl.Segmenter().segment(s)).filter(x => x.segment.trim()).length;
+  return Math.max(1, Math.round(Array.from(s.replace(/[\u200d\ufe0f\u{1F3FB}-\u{1F3FF}]/gu, '')).length));
+}
+function one(spec) {
+  spec = String(spec).trim();
+  let m;
+  if ((m = spec.match(/^(\d+)\*(.+)$/))) { const n = +m[1], inner = m[2]; return '<span class="rep n' + Math.min(n, 12) + (n > 6 ? ' many' : '') + '">' + Array.from({ length: n }, () => '<span class="ri">' + one(inner) + '</span>').join('') + '</span>'; }
+  if ((m = spec.match(/^svg:(\w+):?(.*)$/))) { const f = SHAPES[m[1]]; return f ? svg(f(colorOf(m[2] || 'gris'))) : '<span class="emo">❓</span>'; }
+  if ((m = spec.match(/^size:(big|small):(.+)$/))) { const big = m[1] === 'big';
+    return '<span class="size"><span class="sz-l ' + (big ? 'on' : 'off') + '">' + one(m[2]) + '</span><span class="sz-s ' + (big ? 'off' : 'on') + '">' + one(m[2]) + '</span></span>'; }
+  if ((m = spec.match(/^len:(long|short):(.+)$/))) { const c = colorOf(m[2]), long = m[1] === 'long';
+    return '<span class="lens"><span class="' + (long ? 'on' : 'off') + '">' + svg(SHAPES.pencil(c, 92)) + '</span><span class="' + (long ? 'off' : 'on') + '">' + svg(SHAPES.pencil(c, 40)) + '</span></span>'; }
+  if ((m = spec.match(/^clock:(\d+):(\d+)$/))) return clockSVG(m[1], m[2]);
+  if ((m = spec.match(/^week:([0-6]+|a)$/))) return weekHTML(m[1]);
+  if ((m = spec.match(/^fam:(.+)$/))) return famHTML(m[1]);
+  if ((m = spec.match(/^pos:(on|under|in|next):(.+)@(.+)$/))) return posHTML(m[1], m[2], m[3]);
+  if ((m = spec.match(/^num:(.+)$/))) return '<span class="numb">' + m[1].replace(/[<>&]/g, '') + '</span>';
+  const g = graphemes(spec);
+  return '<span class="emo g' + Math.min(g, 4) + '">' + spec.replace(/[<>&]/g, '') + '</span>';
+}
+function renderPic(spec, cls) {
+  const parts = String(spec || '❓').split('+');
+  return '<div class="pic ' + (cls || '') + (parts.length > 1 ? ' multi' : '') + '">' + parts.map(one).join('') + '</div>';
+}
+const Pics = { renderPic, FAM: FAM.filter(Boolean).map(f => f[0]), colorOf, COLORS, SHAPES: Object.keys(SHAPES), graphemes };
+if (typeof module !== 'undefined' && module.exports) module.exports = Pics;
+ROOT.Pics = Pics;
+})();
+
+</script>
+<script>
+/* Course outline: the single source for unit/lesson titles, grammar patterns and can-do goals.
+   Lesson content lives in uNN.js files. A unit with no content file shows on the path as "coming soon".
+   To add a unit later: create src/content/uNN.js (copy the shape of u03.js) and run build.py. */
+globalThis.SL_OUTLINE = [
+ { n: 1, title: 'Primeras palabras', icon: '🌱', theme: 'First words: people, animals, things',
+   grammar: 'Nouns come with el or la (most -o words take el, most -a words take la); un/una; "es" (is).',
+   lessons: [
+    { title: 'Las personas', icon: '🧒', goal: 'I can recognize and say boy, girl, man, woman and baby.', vocab: 'el niño, la niña, el hombre, la mujer, el bebé' },
+    { title: 'Los animales', icon: '🐶', goal: 'I can name six animals.', vocab: 'el gato, el perro, el pájaro, el pez, el caballo, la vaca' },
+    { title: 'Las cosas', icon: '⚽', goal: 'I can name everyday things and notice el vs. la.', vocab: 'la pelota, el libro, la casa, el carro, la manzana, la flor, la mesa, el zapato' },
+    { title: '¿Qué es?', icon: '❓', goal: 'I can answer "¿Qué es?" with "Es un…/Es una…".', vocab: '¿Qué es?, Es un gato., Es una casa., un, una' },
+    { title: '¿Qué hace?', icon: '🏃', goal: 'I can say who does what: "El niño come."', vocab: 'come, bebe, corre, lee, duerme, nada, juega' }
+   ] },
+ { n: 2, title: '¡Hola!', icon: '👋', theme: 'Greetings and polite words',
+   grammar: 'Questions open with ¿ and exclamations with ¡; "me llamo / te llamas / se llama".',
+   lessons: [
+    { title: 'Hola y adiós', icon: '👋', goal: 'I can greet someone at different times of day and say goodbye.', vocab: '¡Hola!, ¡Adiós!, ¡Buenos días!, ¡Buenas tardes!, ¡Buenas noches!, ¡Hasta mañana!' },
+    { title: '¿Cómo estás?', icon: '🙂', goal: 'I can ask how someone is and answer.', vocab: '¿Cómo estás?, Estoy bien., Estoy mal., Más o menos., ¿Y tú?, Muy bien, gracias.' },
+    { title: '¿Cómo te llamas?', icon: '📛', goal: 'I can ask someone\'s name and say mine.', vocab: '¿Cómo te llamas?, Me llamo…, Mucho gusto., Él se llama…, Ella se llama…' },
+    { title: 'Palabras amables', icon: '🙏', goal: 'I can use please, thank you, you\'re welcome, sorry, yes and no.', vocab: 'Por favor, Gracias, De nada, Perdón, Lo siento, Sí, No' },
+    { title: 'Una amiga nueva', icon: '🤝', goal: 'I can have a short "nice to meet you" conversation.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 3, title: 'Los colores', icon: '🎨', theme: 'Colors and "El gato es verde"-style sentences',
+   grammar: 'Adjectives come after the noun and match it: el gato negro / la casa negra; verde, azul, gris, café don\'t change for el/la; plurals add -s or -es.',
+   lessons: [
+    { title: 'Rojo, azul, verde', icon: '🔴', goal: 'I can name red, blue, green and yellow and say "El gato es verde."', vocab: 'rojo, azul, verde, amarillo; El gato es verde.' },
+    { title: 'Más colores', icon: '🌈', goal: 'I can name black, white, orange, purple, pink, gray and brown.', vocab: 'negro, blanco, anaranjado, morado, rosado, gris, café' },
+    { title: 'La casa es roja', icon: '🏠', goal: 'I can describe la-words with the right color ending: "La casa es roja."', vocab: 'La casa es roja., La flor es amarilla., La pelota es blanca.' },
+    { title: 'El gato negro', icon: '🐈‍⬛', goal: 'I can put the color after the thing: "el gato negro, la flor morada."', vocab: 'el gato negro, la casa blanca, el carro rojo, la flor morada' },
+    { title: 'Muchos colores', icon: '🖍️', goal: 'I can describe more than one thing: "Los gatos son negros."', vocab: 'los gatos, las flores, son; Los gatos son negros.' },
+    { title: '¿De qué color es?', icon: '🎨', goal: 'I can ask and answer "¿De qué color es…?" and say my favorite color.', vocab: '¿De qué color es…?, Es…, Mi color favorito es…' }
+   ] },
+ { n: 4, title: '¿Cómo es?', icon: '📏', theme: 'Describing things and animals',
+   grammar: 'Describing words agree like colors (alto/alta/altos/altas); grande doesn\'t change for el/la; muy = very; "no es" = isn\'t.',
+   lessons: [
+    { title: 'Grande y pequeño', icon: '🐘', goal: 'I can say if something is big or small.', vocab: 'grande, pequeño/pequeña; El elefante es grande.' },
+    { title: 'Alto y bajo', icon: '🦒', goal: 'I can describe tall, short, long and short things.', vocab: 'alto, bajo, largo, corto' },
+    { title: 'Rápido y lento', icon: '🐢', goal: 'I can describe fast, slow, new and old things.', vocab: 'rápido, lento, nuevo, viejo' },
+    { title: 'Muy y no', icon: '❗', goal: 'I can say "very" and "not": "El ratón no es grande."', vocab: 'muy, no; El elefante es muy grande.' },
+    { title: '¿Cómo es tu perro?', icon: '🐕', goal: 'I can describe several things and talk about a pet.', vocab: 'Los perros son grandes.; ¿Cómo es…?' }
+   ] },
+ { n: 5, title: 'Mi familia', icon: '👨‍👩‍👧‍👧', theme: 'Family members',
+   grammar: 'mi / mis (my), tu (your); él (he) / ella (she); tengo / tienes (I have / you have).',
+   lessons: [
+    { title: 'La familia', icon: '👪', goal: 'I can name mom, dad, sister, brother, grandma and grandpa.', vocab: 'la mamá, el papá, la hermana, el hermano, la abuela, el abuelo' },
+    { title: 'Él y ella', icon: '👫', goal: 'I can introduce family: "Ella es mi hermana."', vocab: 'él, ella, mi; Ella es mi mamá.' },
+    { title: 'Más familia', icon: '👵', goal: 'I can name aunts, uncles, cousins and pets.', vocab: 'el tío, la tía, el primo, la prima, la mascota' },
+    { title: 'Tengo una hermana', icon: '👭', goal: 'I can say what family and pets I have.', vocab: 'tengo, tienes, ¿Tienes hermanos?' },
+    { title: 'Mis abuelos', icon: '🏡', goal: 'I can talk about more than one family member: "mis abuelos".', vocab: 'mis, tus; Mis abuelos son simpáticos.' }
+   ] },
+ { n: 6, title: 'Los números', icon: '🔢', theme: 'Numbers 0–20, counting, age',
+   grammar: 'hay = there is / there are; numbers go before the noun (tres gatos); tener … años for age.',
+   lessons: [
+    { title: 'Uno a cinco', icon: '✋', goal: 'I can count from 1 to 5.', vocab: 'uno, dos, tres, cuatro, cinco' },
+    { title: 'Seis a diez', icon: '🔟', goal: 'I can count from 6 to 10.', vocab: 'seis, siete, ocho, nueve, diez, cero' },
+    { title: 'Once a veinte', icon: '🎯', goal: 'I can count from 11 to 20.', vocab: 'once … veinte' },
+    { title: '¿Cuántos hay?', icon: '🧮', goal: 'I can say how many there are: "Hay tres pelotas."', vocab: 'hay, ¿Cuántos…?, ¿Cuántas…?' },
+    { title: '¿Cuántos años tienes?', icon: '🎂', goal: 'I can ask and tell my age.', vocab: '¿Cuántos años tienes?, Tengo once años., Tengo trece años.' }
+   ] },
+ { n: 7, title: 'En la escuela', icon: '🏫', theme: 'School things, classroom, subjects',
+   grammar: 'estar for where things are: está en / sobre / debajo de / al lado de; ¿Dónde está…?',
+   lessons: [
+    { title: 'Mi mochila', icon: '🎒', goal: 'I can name the things in my backpack.', vocab: 'el lápiz, el libro, el cuaderno, la mochila, la regla, las tijeras, la computadora' },
+    { title: 'La clase', icon: '👩‍🏫', goal: 'I can name people and things in the classroom.', vocab: 'la maestra, el maestro, el estudiante, la silla, el escritorio, el pizarrón' },
+    { title: '¿Dónde está?', icon: '🔍', goal: 'I can say where something is.', vocab: 'está en, sobre, debajo de, al lado de' },
+    { title: 'Mis clases', icon: '📚', goal: 'I can name school subjects.', vocab: 'las matemáticas, las ciencias, el arte, la música, la educación física, el inglés, el español' },
+    { title: 'Un día en la escuela', icon: '🔔', goal: 'I can understand a short school conversation.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 8, title: 'Mi casa', icon: '🏠', theme: 'Rooms and things at home',
+   grammar: 'hay (there is) vs. está (it is located); en la cocina, en el baño.',
+   lessons: [
+    { title: 'Los cuartos', icon: '🚪', goal: 'I can name the rooms of a house.', vocab: 'la cocina, el baño, la sala, el cuarto, el comedor, el jardín' },
+    { title: 'Las cosas de la casa', icon: '🛋️', goal: 'I can name furniture and things at home.', vocab: 'la cama, el sofá, la puerta, la ventana, la lámpara, el refrigerador' },
+    { title: '¿Dónde está papá?', icon: '🔎', goal: 'I can say which room someone is in.', vocab: 'Está en la cocina.' },
+    { title: '¿Qué hay?', icon: '📦', goal: 'I can say what there is in a room.', vocab: 'Hay una cama en el cuarto.' },
+    { title: 'Mi cuarto', icon: '🛏️', goal: 'I can describe my room.', vocab: 'Mi cuarto es…; Hay…' }
+   ] },
+ { n: 9, title: 'La comida', icon: '🍎', theme: 'Food and drinks, likes and dislikes',
+   grammar: 'me gusta + one thing, me gustan + more than one; quiero (I want); tengo hambre / tengo sed.',
+   lessons: [
+    { title: 'Las frutas', icon: '🍓', goal: 'I can name fruits.', vocab: 'la manzana, el plátano, la naranja, las uvas, la fresa, la sandía' },
+    { title: 'La comida', icon: '🍕', goal: 'I can name everyday foods.', vocab: 'el pan, el queso, el huevo, el arroz, la pizza, la sopa, el pollo, la ensalada' },
+    { title: 'Tengo sed', icon: '🥛', goal: 'I can name drinks and say I am hungry or thirsty.', vocab: 'el agua, la leche, el jugo, Tengo hambre., Tengo sed.' },
+    { title: 'Me gusta', icon: '😋', goal: 'I can say what I like and don\'t like.', vocab: 'Me gusta…, Me gustan…, No me gusta…' },
+    { title: 'Quiero, por favor', icon: '🍽️', goal: 'I can ask for food politely at breakfast, lunch and dinner.', vocab: 'el desayuno, el almuerzo, la cena, Quiero…, por favor' }
+   ] },
+ { n: 10, title: 'Los días y la hora', icon: '📅', theme: 'Days of the week and telling time',
+   grammar: 'Days are lowercase; "el lunes" = on Monday; Es la una / Son las dos; y media, y cuarto.',
+   lessons: [
+    { title: 'Los días', icon: '🗓️', goal: 'I can say the days of the week.', vocab: 'lunes, martes, miércoles, jueves, viernes, sábado, domingo' },
+    { title: '¿Qué día es hoy?', icon: '📆', goal: 'I can say what day today and tomorrow are.', vocab: 'hoy, mañana, Hoy es lunes.' },
+    { title: '¿Qué hora es?', icon: '🕐', goal: 'I can tell the time on the hour.', vocab: 'Es la una., Son las dos., Son las tres.' },
+    { title: 'Y media', icon: '🕧', goal: 'I can say half past and quarter past.', vocab: 'y media, y cuarto' },
+    { title: 'Mi semana', icon: '⏰', goal: 'I can say what I do on which day and at what time.', vocab: 'a las…, el sábado…' }
+   ] },
+ { n: 11, title: 'El tiempo y la ropa', icon: '⛅', theme: 'Weather, seasons and clothes',
+   grammar: 'hace + weather (hace frío, hace sol); llueve, nieva; llevar: llevo / llevas / lleva.',
+   lessons: [
+    { title: '¿Qué tiempo hace?', icon: '☀️', goal: 'I can describe the weather.', vocab: 'Hace sol., Hace calor., Hace frío., Hace viento., Llueve., Nieva., Está nublado.' },
+    { title: 'Las estaciones', icon: '🍂', goal: 'I can name the seasons and their weather.', vocab: 'la primavera, el verano, el otoño, el invierno' },
+    { title: 'La ropa', icon: '👕', goal: 'I can name clothes.', vocab: 'la camisa, los pantalones, la chaqueta, los zapatos, la gorra, el suéter, el vestido' },
+    { title: 'Llevo una chaqueta', icon: '🧥', goal: 'I can say what someone is wearing.', vocab: 'llevo, lleva; Ella lleva un vestido rojo.' },
+    { title: '¿Qué llevas hoy?', icon: '🧣', goal: 'I can choose clothes for the weather.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 12, title: 'Los deportes', icon: '⚽', theme: 'Sports: soccer and golf',
+   grammar: 'jugar: juego / juegas / juega + al + sport; ¿Te gusta…? / Me gusta…',
+   lessons: [
+    { title: 'Los deportes', icon: '🏅', goal: 'I can name sports.', vocab: 'el fútbol, el golf, el básquetbol, el tenis, el béisbol, la natación' },
+    { title: 'Juego al fútbol', icon: '🥅', goal: 'I can say what sports people play.', vocab: 'juego, juegas, juega' },
+    { title: 'El fútbol', icon: '⚽', goal: 'I can name things in a soccer game.', vocab: 'el balón, la portería, el gol, el equipo, la jugadora, el partido' },
+    { title: 'El golf', icon: '⛳', goal: 'I can name things on the golf course.', vocab: 'el palo, la pelota de golf, el hoyo, el campo de golf, la bandera' },
+    { title: '¿Te gusta el golf?', icon: '🏌️‍♀️', goal: 'I can ask and say which sports I like.', vocab: '¿Te gusta…?, Me gusta mucho., No me gusta.' }
+   ] },
+ { n: 13, title: 'Amigos y sentimientos', icon: '😊', theme: 'Feelings and friends',
+   grammar: 'estar + feeling (estoy cansada); the feeling word matches the person; ser (what someone is like) vs. estar (how they feel now).',
+   lessons: [
+    { title: '¿Cómo te sientes?', icon: '😀', goal: 'I can say how I feel.', vocab: 'feliz, triste, cansada, enojada, nerviosa, aburrida, emocionada' },
+    { title: 'Él está, ella está', icon: '😴', goal: 'I can say how someone else feels with the right ending.', vocab: 'El niño está cansado. La niña está cansada.' },
+    { title: 'Mis amigos', icon: '👯', goal: 'I can describe my friends.', vocab: 'mi amiga, mi amigo, simpático, divertido, inteligente, amable' },
+    { title: 'Es o está', icon: '⚖️', goal: 'I can tell "es" (what she\'s like) from "está" (how she feels).', vocab: 'Ella es simpática. Ella está cansada.' },
+    { title: '¿Qué te pasa?', icon: '🫂', goal: 'I can check on a friend and cheer them up.', vocab: '¿Qué te pasa?, ¡Ánimo!, ¿Estás bien?' }
+   ] },
+ { n: 14, title: 'Pasatiempos', icon: '🎸', theme: 'Hobbies and free time',
+   grammar: 'Me gusta + action word (me gusta bailar); -ar verbs: yo bailo, tú bailas, ella baila, nosotros bailamos.',
+   lessons: [
+    { title: 'Me gusta bailar', icon: '💃', goal: 'I can say what activities I like.', vocab: 'leer, dibujar, bailar, cantar, nadar, cocinar, jugar videojuegos' },
+    { title: 'Yo canto, tú cantas', icon: '🎤', goal: 'I can say what I do and what you do.', vocab: 'canto, cantas, canta, bailo, bailas, baila' },
+    { title: 'Nosotras jugamos', icon: '👭', goal: 'I can say what we do together.', vocab: 'jugamos, cantamos, nadamos' },
+    { title: 'Siempre y nunca', icon: '🔁', goal: 'I can say how often I do things.', vocab: 'siempre, a veces, nunca, todos los días, los fines de semana' },
+    { title: '¿Qué te gusta hacer?', icon: '🎨', goal: 'I can talk about hobbies with a friend.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 15, title: 'El cuerpo y la salud', icon: '🩺', theme: 'Body and health',
+   grammar: 'me duele + one thing, me duelen + more than one; tengo fiebre / tengo tos.',
+   lessons: [
+    { title: 'El cuerpo', icon: '💪', goal: 'I can name parts of the body.', vocab: 'la cabeza, el brazo, la mano, la pierna, el pie, el estómago' },
+    { title: 'La cara', icon: '👀', goal: 'I can name parts of the face.', vocab: 'los ojos, la nariz, la boca, las orejas, el pelo, los dientes' },
+    { title: 'Me duele', icon: '🤕', goal: 'I can say what hurts.', vocab: 'Me duele la cabeza., Me duelen los pies.' },
+    { title: 'Estoy enferma', icon: '🤒', goal: 'I can say I feel sick.', vocab: 'Tengo fiebre., Tengo tos., Estoy enferma.' },
+    { title: 'Con la enfermera', icon: '🏥', goal: 'I can talk with the school nurse.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 16, title: 'De compras', icon: '🛍️', theme: 'Shopping and prices',
+   grammar: '¿Cuánto cuesta? (one thing) / ¿Cuánto cuestan? (more than one); este / esta (this); numbers to 100.',
+   lessons: [
+    { title: 'Veinte, treinta, cuarenta', icon: '💯', goal: 'I can count by tens to 100.', vocab: 'veinte, treinta, cuarenta, cincuenta … cien' },
+    { title: 'Las tiendas', icon: '🏪', goal: 'I can name kinds of stores.', vocab: 'la tienda, el mercado, la panadería, la librería, la juguetería' },
+    { title: '¿Cuánto cuesta?', icon: '💲', goal: 'I can ask and understand prices.', vocab: '¿Cuánto cuesta…?, Cuesta… dólares.' },
+    { title: 'Este y esta', icon: '👉', goal: 'I can point out what I want: "Quiero esta gorra."', vocab: 'este, esta, Quiero…' },
+    { title: 'En la tienda', icon: '🧾', goal: 'I can buy something in a store.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 17, title: 'De viaje', icon: '✈️', theme: 'Travel and places',
+   grammar: 'ir: voy / vas / va; a + el = al (voy al parque); voy a + action (voy a nadar).',
+   lessons: [
+    { title: 'El transporte', icon: '🚆', goal: 'I can name ways to travel.', vocab: 'el avión, el tren, el autobús, el barco, la bicicleta, a pie' },
+    { title: 'Los lugares', icon: '🏖️', goal: 'I can name places to visit.', vocab: 'la playa, la montaña, la ciudad, el hotel, el aeropuerto, el museo, el parque' },
+    { title: 'Voy al parque', icon: '🚶‍♀️', goal: 'I can say where I am going.', vocab: 'voy a la…, voy al…' },
+    { title: 'Voy a nadar', icon: '🏊‍♀️', goal: 'I can say what I am going to do.', vocab: 'voy a + action' },
+    { title: '¿Dónde está el baño?', icon: '🧳', goal: 'I can ask for help when traveling.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 18, title: 'Conversación: ¡Mucho gusto!', icon: '🗣️', theme: 'Introducing yourself and talking at school',
+   grammar: 'Question words: ¿Qué? ¿Quién? ¿Dónde? ¿Cuándo? ¿Cuál? ¿Por qué? / porque.',
+   lessons: [
+    { title: 'Me presento', icon: '🙋‍♀️', goal: 'I can introduce myself in several sentences.', vocab: 'Me llamo…, Tengo… años., Me gusta…, Soy de…' },
+    { title: 'Las preguntas', icon: '❔', goal: 'I can ask questions with question words.', vocab: '¿Qué? ¿Quién? ¿Dónde? ¿Cuándo? ¿Cuál? ¿Por qué?' },
+    { title: 'En la clase', icon: '✋', goal: 'I can use classroom survival phrases.', vocab: 'No entiendo., ¿Puedo ir al baño?, ¿Me prestas un lápiz?, Más despacio, por favor.' },
+    { title: 'En el almuerzo', icon: '🥪', goal: 'I can chat with a classmate at lunch.', vocab: 'Review + dialogue' },
+    { title: 'Una estudiante nueva', icon: '🌟', goal: 'I can welcome a new student.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 19, title: 'Conversación: En la cancha', icon: '🏆', theme: 'On the golf course and at a soccer game',
+   grammar: 'Short commands and cheers (¡Pasa el balón! ¡Buen tiro!); nosotros: vamos, ganamos.',
+   lessons: [
+    { title: 'En el campo de golf', icon: '⛳', goal: 'I can talk with a friend on the golf course.', vocab: '¡Buen tiro!, Te toca., ¿Dónde está mi pelota?, ¡Cuidado!' },
+    { title: 'Golpes y hoyos', icon: '🏌️‍♀️', goal: 'I can talk about score on the golf course.', vocab: 'el primer hoyo, golpes, ¿Cuántos golpes?' },
+    { title: 'En el partido', icon: '⚽', goal: 'I can cheer and talk during a soccer game.', vocab: '¡Pasa el balón!, ¡Gol!, ¡Vamos, equipo!' },
+    { title: '¿Quién va ganando?', icon: '📣', goal: 'I can talk about the score.', vocab: 'Vamos ganando dos a uno., ¡Ganamos!' },
+    { title: 'Después del partido', icon: '🥤', goal: 'I can talk about a game afterward.', vocab: 'Review + dialogue' }
+   ] },
+ { n: 20, title: 'Conversación: Planes y comida', icon: '🍽️', theme: 'Ordering food and making plans',
+   grammar: 'Polite requests: quisiera…, para mí…; ¿Quieres + action?; voy a + action for plans.',
+   lessons: [
+    { title: 'En el restaurante', icon: '🧑‍🍳', goal: 'I can understand a restaurant menu and the server.', vocab: 'el menú, el mesero, la cuenta, ¿Qué desea?' },
+    { title: 'Para mí, una pizza', icon: '🍕', goal: 'I can order food and drinks politely.', vocab: 'Quisiera…, Para mí…, La cuenta, por favor.' },
+    { title: '¿Quieres ir al cine?', icon: '🎬', goal: 'I can invite a friend to do something.', vocab: '¿Quieres…?, ¿A qué hora?, ¿Dónde?' },
+    { title: '¡Claro que sí!', icon: '👍', goal: 'I can accept or politely decline.', vocab: '¡Claro que sí!, ¡Qué buena idea!, Lo siento, no puedo.' },
+    { title: 'La gran conversación', icon: '🎉', goal: 'I can hold a short conversation: meet, plan and order food.', vocab: 'Review + dialogue' }
+   ] }
+];
+
+</script>
+<script>
+/* Unit 1 — Primeras palabras. Item format: "Spanish|picture|English (grown-up help only)". */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 1, lessons: [
+ { items: [
+    'el niño|👦|the boy', 'la niña|👧|the girl', 'el hombre|👨|the man', 'la mujer|👩|the woman', 'el bebé|👶|the baby',
+    'el niño y la niña|👦+👧|the boy and the girl', 'el hombre y la mujer|👨+👩|the man and the woman'
+   ] },
+ { items: [
+    'el gato|🐱|the cat', 'el perro|🐶|the dog', 'el pájaro|🐦|the bird', 'el pez|🐟|the fish', 'el caballo|🐴|the horse', 'la vaca|🐮|the cow',
+    'el gato y el perro|🐱+🐶|the cat and the dog', 'la niña y el perro|👧+🐶|the girl and the dog'
+   ],
+   review: ['el niño', 'la mujer'] },
+ { items: [
+    'la pelota|⚽|the ball', 'el libro|📕|the book', 'la casa|🏠|the house', 'el carro|🚗|the car', 'la manzana|🍎|the apple',
+    'la flor|🌷|the flower', 'la silla|🪑|the chair', 'el zapato|👟|the shoe'
+   ],
+   pattern: {
+    groups: [ ['[el] gat[o]|🐱', '[el] perr[o]|🐶', '[el] libr[o]|📕'], ['[la] cas[a]|🏠', '[la] manzan[a]|🍎', '[la] vac[a]|🐮'] ],
+    quiz: [ '[el] zapato|👟|the shoe|la', '[la] pelota|⚽|the ball|el', '[el] carro|🚗|the car|la', '[la] silla|🪑|the chair|el' ],
+    card: 'el … -o   ·   la … -a',
+    en: 'Words ending in -o usually go with "el"; words ending in -a usually go with "la". A few just have to be learned (la flor, el pez, el bebé).'
+   } },
+ { items: [
+    '¿Qué es?|🤔❓|What is it?', 'Es un gato.|👉🐱|It\'s a cat.', 'Es un perro.|👉🐶|It\'s a dog.', 'Es un libro.|👉📕|It\'s a book.',
+    'Es un caballo.|👉🐴|It\'s a horse.', 'Es una casa.|👉🏠|It\'s a house.', 'Es una niña.|👉👧|It\'s a girl.', 'Es una flor.|👉🌷|It\'s a flower.'
+   ],
+   pattern: {
+    groups: [ ['[un] gato|🐱', '[un] perro|🐶', '[un] libro|📕'], ['[una] casa|🏠', '[una] niña|👧', '[una] flor|🌷'] ],
+    quiz: [ 'Es [un] carro.|👉🚗|It\'s a car.|una', 'Es [una] manzana.|👉🍎|It\'s an apple.|un', 'Es [un] zapato.|👉👟|It\'s a shoe.|una', 'Es [una] vaca.|👉🐮|It\'s a cow.|un' ],
+    card: 'el → un   ·   la → una',
+    en: '"un" and "una" mean "a/an". Words that take "el" take "un"; words that take "la" take "una".'
+   },
+   dialogue: { scene: '🏡', lines: [
+     'S|¿Qué es?|What is it?', 'M|Es un pájaro.|It\'s a bird.', 'S|¿Y esto? ¿Qué es?|And this? What is it?', 'M|Es una vaca.|It\'s a cow.' ],
+    replies: [
+     'S>¿Qué es?|Es un gato.|Es una casa.;Es un libro.|What is it?|👉🐱',
+     'S>¿Qué es?|Es una flor.|Es un perro.;Es una niña.|What is it?|👉🌷',
+     'M>¿Qué es?|Es un caballo.|Es un pez.;Es una manzana.|What is it?|👉🐴' ] } },
+ { items: [
+    'El niño come.|👦+🍎|The boy eats.', 'La niña bebe.|👧+🥛|The girl drinks.', 'El perro corre.|🐕+💨|The dog runs.', 'La mujer lee.|👩+📖|The woman reads.',
+    'El gato duerme.|🐈+💤|The cat sleeps.', 'El niño nada.|🏊‍♂️|The boy swims.', 'La niña juega.|👧+⚽|The girl plays.', 'El hombre corre.|🏃‍♂️|The man runs.'
+   ],
+   fills: [ 'El perro [corre].|🐕+💨|The dog runs.|duerme,bebe', 'La mujer [lee].|👩+📖|The woman reads.|come,nada', 'El gato [duerme].|🐈+💤|The cat sleeps.|juega,corre' ],
+   dialogue: { scene: '🌳', lines: [
+     'M|¿Qué hace el gato?|What is the cat doing?', 'S|El gato duerme.|The cat is sleeping.', 'M|¿Y el perro?|And the dog?', 'S|El perro corre.|The dog is running.' ],
+    replies: [
+     'M>¿Qué hace la niña?|La niña bebe.|La niña duerme.;El niño come.|What is the girl doing?|👧+🥛',
+     'M>¿Qué hace el niño?|El niño nada.|El niño lee.;La niña juega.|What is the boy doing?|🏊‍♂️',
+     'S>¿Qué hace el gato?|El gato duerme.|El gato come.;El perro corre.|What is the cat doing?|🐈+💤' ] } }
+] });
+
+</script>
+<script>
+/* Unit 2 — ¡Hola! */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 2, lessons: [
+ { items: [
+    '¡Hola!|👋😃|Hi!', '¡Adiós!|👋🚪|Bye!', '¡Buenos días!|🌅☕|Good morning!', '¡Buenas tardes!|🕒☀️|Good afternoon!',
+    '¡Buenas noches!|🌙⭐|Good evening! / Good night!', '¡Hasta mañana!|👋➡️🌅|See you tomorrow!'
+   ],
+   dialogue: { scene: '🏫', lines: [
+     'S|¡Hola, Mateo!|Hi, Mateo!', 'M|¡Hola, Sofía! ¡Buenos días!|Hi, Sofía! Good morning!', 'S|¡Buenos días!|Good morning!',
+     'M|¡Adiós!|Bye!', 'S|¡Adiós! ¡Hasta mañana!|Bye! See you tomorrow!' ],
+    replies: [
+     'M>¡Buenos días!|¡Buenos días!|¡Buenas noches!;¡Adiós!|Good morning!|🌅☕',
+     'S>¡Buenas noches!|¡Buenas noches!|¡Buenos días!;¡Buenas tardes!|Good night!|🌙⭐',
+     'M>¡Adiós!|¡Hasta mañana!|¡Hola!;¡Buenos días!|Bye!|👋🚪' ] } },
+ { items: [
+    '¿Cómo estás?|🙂❓|How are you?', 'Estoy bien.|😀👍|I\'m fine.', 'Estoy mal.|😞👎|I\'m not well.', 'Más o menos.|😐🤷|So-so.',
+    'Muy bien, gracias.|😁👍👍|Very well, thanks.', '¿Y tú?|👉🙂❓|And you?'
+   ],
+   pattern: {
+    groups: [ ['[¿]Cómo estás[?]|🙂❓', '[¿]Y tú[?]|👉🙂❓'], ['[¡]Hola[!]|👋😃', '[¡]Buenos días[!]|🌅☕'] ],
+    quiz: [ '[¿]Cómo estás?|🙂❓|How are you?|¡', '[¡]Adiós!|👋🚪|Bye!|¿', '[¿]Y tú?|👉🙂❓|And you?|¡' ],
+    card: '¿ … ?   ·   ¡ … !',
+    en: 'Spanish questions start with an upside-down ¿ and end with ?. Exclamations start with ¡ and end with !.'
+   },
+   dialogue: { scene: '🏫', lines: [
+     'S|¡Hola, Mateo! ¿Cómo estás?|Hi, Mateo! How are you?', 'M|Muy bien, gracias. ¿Y tú?|Very well, thanks. And you?', 'S|Más o menos.|So-so.' ],
+    replies: [
+     'S>¿Cómo estás?|Estoy bien.|¡Buenas noches!;¡Adiós!|How are you?|😀👍',
+     'M>Muy bien, gracias. ¿Y tú?|Estoy bien.|¿Cómo estás?;¡Buenos días!|Very well, thanks. And you?',
+     'S>¿Cómo estás?|Estoy mal.|¡Hola!;¿Y tú?|How are you?|😞👎' ] } },
+ { items: [
+    '¿Cómo te llamas?|📛❓|What\'s your name?', 'Me llamo Sofía.|👧🏽💬|My name is Sofía.', 'Me llamo Mateo.|👦🏻💬|My name is Mateo.',
+    'Ella se llama Valentina.|👉👧🏼|Her name is Valentina.', 'Él se llama Lucas.|👉👦🏾|His name is Lucas.', 'Mucho gusto.|🤝😊|Nice to meet you.',
+    'Igualmente.|🤝🙂|Likewise.', 'el nombre|📛|the name'
+   ],
+   pattern: {
+    groups: [ ['[Me] llam[o] Sofía.|👧🏽💬'], ['¿Cómo [te] llam[as]?|📛❓'], ['Él [se] llam[a] Lucas.|👉👦🏾'] ],
+    quiz: [ '¿Cómo [te] llamas?|📛❓|What\'s your name?|me,se', '[Me] llamo Mateo.|👦🏻💬|My name is Mateo.|Te,Se', 'Ella [se] llama Valentina.|👉👧🏼|Her name is Valentina.|me,te' ],
+    card: 'me llamo · te llamas · se llama',
+    en: 'me llamo = my name is; ¿cómo te llamas? = what\'s your name?; se llama = his/her name is.'
+   },
+   dialogue: { scene: '🛝', lines: [
+     'V|¡Hola! ¿Cómo te llamas?|Hi! What\'s your name?', 'M|Me llamo Mateo. ¿Y tú?|My name is Mateo. And you?', 'V|Me llamo Valentina.|My name is Valentina.',
+     'M|Mucho gusto.|Nice to meet you.', 'V|Igualmente.|Likewise.' ],
+    replies: [
+     'V>¿Cómo te llamas?|Me llamo Mateo.|Mucho gusto.;Estoy bien.|What\'s your name?',
+     'M>Mucho gusto.|Igualmente.|¿Cómo te llamas?;Más o menos.|Nice to meet you.',
+     'V>¿Cómo se llama él?|Se llama Lucas.|Me llamo Lucas.;Estoy mal.|What\'s his name?|👉👦🏾' ] } },
+ { items: [
+    'por favor|🥺🙏|please', 'gracias|🎁😊|thank you', 'de nada|😊👌|you\'re welcome', 'perdón|😬🙇|excuse me / pardon',
+    'lo siento|😢💔|I\'m sorry', 'sí|👍✅|yes', 'no|👎🚫|no', 'Sí, por favor.|🙋🍪|Yes, please.', 'No, gracias.|🙅🍪|No, thank you.'
+   ],
+   dialogue: { scene: '🍽️', lines: [
+     'M|Una manzana, por favor.|An apple, please.', 'E|Aquí tienes.|Here you go.', 'M|¡Gracias!|Thanks!', 'E|De nada.|You\'re welcome.' ],
+    replies: [
+     'M>¡Gracias!|De nada.|Lo siento.;Por favor.|Thanks!',
+     'E>¿Una manzana?|Sí, por favor.|De nada.;¡Buenas noches!|An apple?|🍎',
+     'E>¿Una galleta?|No, gracias.|Igualmente.;Me llamo Mateo.|A cookie?|🍪' ] } },
+ { items: [
+    'la amiga|👭|the friend (girl)', 'el amigo|👬|the friend (boy)', 'Es mi amiga.|👧🏽❤️👧🏼|She\'s my friend.', 'Es mi amigo.|👦🏻🤜🤛👦🏾|He\'s my friend.',
+    'la escuela|🏫|the school', 'la maestra|👩🏽‍🏫|the teacher', '¡Hasta luego!|👋🕐|See you later!', '¡Bienvenida!|🎈🚪|Welcome! (to a girl)'
+   ],
+   review: ['¿Cómo te llamas?', 'Mucho gusto.', '¿Cómo estás?'],
+   dialogue: { scene: '🏫', lines: [
+     'S|¡Hola! Me llamo Sofía. ¿Cómo te llamas?|Hi! My name is Sofía. What\'s your name?', 'V|Me llamo Valentina.|My name is Valentina.',
+     'S|Mucho gusto, Valentina. ¡Bienvenida!|Nice to meet you, Valentina. Welcome!', 'V|Igualmente. ¡Gracias!|Likewise. Thanks!',
+     'S|¿Cómo estás?|How are you?', 'V|Muy bien. ¿Y tú?|Very well. And you?', 'S|Muy bien. Ella es la maestra.|Very well. She is the teacher.',
+     'P|¡Buenos días, Valentina!|Good morning, Valentina!' ],
+    replies: [
+     'S>¿Cómo te llamas?|Me llamo Valentina.|Mucho gusto.;De nada.|What\'s your name?',
+     'S>¡Bienvenida!|¡Gracias!|Lo siento.;¡Adiós!|Welcome!',
+     'S>¿Cómo estás?|Muy bien. ¿Y tú?|Me llamo Sofía.;Por favor.|How are you?',
+     'P>¡Buenos días!|¡Buenos días!|¡Buenas noches!;Perdón.|Good morning!|🌅☕' ] } }
+] });
+
+</script>
+<script>
+/* Unit 3 — Los colores. "El gato es verde."-style sentences, agreement discovered from patterns. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 3, lessons: [
+ { items: [
+    'rojo|svg:blob:rojo|red', 'azul|svg:blob:azul|blue', 'verde|svg:blob:verde|green', 'amarillo|svg:blob:amarillo|yellow',
+    'El gato es verde.|svg:cat:verde|The cat is green.', 'El gato es rojo.|svg:cat:rojo|The cat is red.', 'El carro es azul.|svg:car:azul|The car is blue.',
+    'El pájaro es amarillo.|svg:bird:amarillo|The bird is yellow.', 'El perro es rojo.|svg:dog:rojo|The dog is red.', 'El libro es verde.|svg:book:verde|The book is green.'
+   ],
+   fills: [ 'El carro es [rojo].|svg:car:rojo|The car is red.|azul,verde', 'El pájaro es [azul].|svg:bird:azul|The bird is blue.|amarillo,rojo', 'El gato es [amarillo].|svg:cat:amarillo|The cat is yellow.|verde,azul' ] },
+ { items: [
+    'negro|svg:blob:negro|black', 'blanco|svg:blob:blanco|white', 'anaranjado|svg:blob:anaranjado|orange', 'morado|svg:blob:morado|purple',
+    'rosado|svg:blob:rosado|pink', 'gris|svg:blob:gris|gray', 'café|svg:blob:café|brown',
+    'El perro es negro.|svg:dog:negro|The dog is black.', 'El gato es blanco.|svg:cat:blanco|The cat is white.', 'El pez es anaranjado.|svg:fish:anaranjado|The fish is orange.',
+    'El perro es café.|svg:dog:café|The dog is brown.'
+   ],
+   review: ['El gato es verde.', 'azul'],
+   fills: [ 'El carro es [gris].|svg:car:gris|The car is gray.|negro,blanco', 'El pez es [rosado].|svg:fish:rosado|The fish is pink.|morado,café', 'El libro es [morado].|svg:book:morado|The book is purple.|rosado,negro' ] },
+ { items: [
+    'La casa es roja.|svg:house:rojo|The house is red.', 'La casa es amarilla.|svg:house:amarillo|The house is yellow.', 'La flor es morada.|svg:flower:morado|The flower is purple.',
+    'La flor es amarilla.|svg:flower:amarillo|The flower is yellow.', 'La pelota es blanca.|svg:ball:blanco|The ball is white.', 'La pelota es negra.|svg:ball:negro|The ball is black.',
+    'La manzana es roja.|svg:apple:rojo|The apple is red.', 'La manzana es verde.|svg:apple:verde|The apple is green.', 'La camisa es rosada.|svg:shirt:rosado|The shirt is pink.',
+    'La silla es azul.|svg:chair:azul|The chair is blue.'
+   ],
+   pattern: {
+    groups: [ ['[El] gato es roj[o].|svg:cat:rojo', '[El] carro es blanc[o].|svg:car:blanco'], ['[La] casa es roj[a].|svg:house:rojo', '[La] pelota es blanc[a].|svg:ball:blanco'],
+              ['El gato es [verde].|svg:cat:verde', 'La casa es [verde].|svg:house:verde'] ],
+    quiz: [ 'La flor es [roja].|svg:flower:rojo|The flower is red.|rojo', 'El carro es [negro].|svg:car:negro|The car is black.|negra', 'La camisa es [blanca].|svg:shirt:blanco|The shirt is white.|blanco' ],
+    card: 'el … rojo   ·   la … roja   ·   verde = verde',
+    en: 'With "la" words, colors ending in -o switch to -a (rojo → roja). Colors that don\'t end in -o (verde, azul, gris, café) stay the same.'
+   },
+   fills: [ 'La flor es [blanca].|svg:flower:blanco|The flower is white.|blanco,blancas', 'La casa es [anaranjada].|svg:house:anaranjado|The house is orange.|anaranjado,anaranjados' ] },
+ { items: [
+    'el gato negro|svg:cat:negro|the black cat', 'el gato blanco|svg:cat:blanco|the white cat', 'la casa blanca|svg:house:blanco|the white house', 'el carro rojo|svg:car:rojo|the red car',
+    'la flor rosada|svg:flower:rosado|the pink flower', 'el pez amarillo|svg:fish:amarillo|the yellow fish', 'la pelota azul|svg:ball:azul|the blue ball', 'el perro gris|svg:dog:gris|the gray dog',
+    'la camisa verde|svg:shirt:verde|the green shirt', 'Es un perro blanco.|svg:dog:blanco|It\'s a white dog.', 'Es una flor roja.|svg:flower:rojo|It\'s a red flower.'
+   ],
+   pattern: {
+    groups: [ ['el gato [negro]|svg:cat:negro', 'el carro [rojo]|svg:car:rojo'], ['la casa [blanca]|svg:house:blanco', 'la pelota [azul]|svg:ball:azul'] ],
+    quiz: [ '[el gato negro]|svg:cat:negro|the black cat|el negro gato', 'el pez [amarillo]|svg:fish:amarillo|the yellow fish|amarilla', 'la flor [rosada]|svg:flower:rosado|the pink flower|rosado' ],
+    card: 'el gato negro   ·   la casa blanca',
+    en: 'The color comes AFTER the thing (el gato negro = the black cat), and it matches it: el gato negro, la casa negra.'
+   } },
+ { items: [
+    'los gatos negros|3*svg:cat:negro|the black cats', 'las flores rojas|3*svg:flower:rojo|the red flowers', 'los carros azules|2*svg:car:azul|the blue cars',
+    'las casas blancas|2*svg:house:blanco|the white houses', 'Los perros son cafés.|2*svg:dog:café|The dogs are brown.', 'Las pelotas son verdes.|3*svg:ball:verde|The balls are green.',
+    'Los peces son anaranjados.|3*svg:fish:anaranjado|The fish are orange.', 'Las manzanas son rojas.|3*svg:apple:rojo|The apples are red.', 'Los pájaros son amarillos.|2*svg:bird:amarillo|The birds are yellow.'
+   ],
+   review: ['El pájaro es amarillo.', 'La manzana es roja.'],
+   pattern: {
+    groups: [ ['[el] gat[o]|svg:cat:negro', '[los] gat[os]|3*svg:cat:negro'], ['[la] flo[r]|svg:flower:rojo', '[las] flor[es]|3*svg:flower:rojo'],
+              ['El perro [es] café.|svg:dog:café', 'Los perros [son] cafés.|2*svg:dog:café'] ],
+    quiz: [ '[las] casas blancas|2*svg:house:blanco|the white houses|la,los', 'los carros [azules]|2*svg:car:azul|the blue cars|azul', 'Los perros [son] cafés.|2*svg:dog:café|The dogs are brown.|es',
+            'las manzanas [rojas]|3*svg:apple:rojo|the red apples|roja,rojos' ],
+    card: 'el → los   ·   la → las   ·   + s / + es   ·   es → son',
+    en: 'For more than one: el → los, la → las; add -s (or -es after a consonant: flor → flores, azul → azules) to the thing AND the color; "es" becomes "son".'
+   } },
+ { items: [
+    '¿De qué color es?|🎨❓|What color is it?', 'Es roja.|svg:apple:rojo|It\'s red. (la manzana)', 'Es morado.|svg:balloon:morado|It\'s purple. (el globo)',
+    'el arcoíris|🌈|the rainbow', 'El loro es de muchos colores.|🦜|The parrot is many colors.', '¿Cuál es tu color favorito?|🎨⭐❓|What\'s your favorite color?',
+    'Mi color favorito es el azul.|💙⭐|My favorite color is blue.', 'Mi color favorito es el verde.|💚⭐|My favorite color is green.', 'Mi color favorito es el morado.|💜⭐|My favorite color is purple.'
+   ],
+   fills: [ '¿De qué color [es] el carro?|svg:car:rojo|What color is the car?|son', '¿De qué color [son] las flores?|3*svg:flower:amarillo|What color are the flowers?|es' ],
+   dialogue: { scene: '🖍️', lines: [
+     'S|¿De qué color es tu gato?|What color is your cat?', 'M|Mi gato es negro y blanco.|My cat is black and white.',
+     'S|¿Cuál es tu color favorito?|What\'s your favorite color?', 'M|Mi color favorito es el verde. ¿Y tú?|My favorite color is green. And you?',
+     'S|Mi color favorito es el morado.|My favorite color is purple.' ],
+    replies: [
+     'S>¿De qué color es el pez?|Es anaranjado.|Es azul.;Es verde.|What color is the fish?|svg:fish:anaranjado',
+     'M>¿De qué color es la casa?|Es blanca.|Es roja.;Es amarilla.|What color is the house?|svg:house:blanco',
+     'S>¿Cuál es tu color favorito?|Mi color favorito es el rojo.|Estoy bien.;Es un gato.|What\'s your favorite color?' ] } }
+] });
+
+</script>
+<script>
+/* Unit 4 — ¿Cómo es? Describing. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 4, lessons: [
+ { items: [
+    'grande|size:big:svg:ball:azul|big', 'pequeño|size:small:svg:ball:azul|small', 'El perro es grande.|size:big:🐕|The dog is big.', 'El perro es pequeño.|size:small:🐕|The dog is small.',
+    'La casa es grande.|size:big:🏠|The house is big.', 'La casa es pequeña.|size:small:🏠|The house is small.', 'El elefante es grande.|🐘|The elephant is big.',
+    'El ratón es pequeño.|🐭|The mouse is small.', 'La pelota es pequeña.|size:small:⚽|The ball is small.', 'El carro es grande.|size:big:🚙|The car is big.'
+   ],
+   pattern: {
+    groups: [ ['El perro es pequeñ[o].|size:small:🐕', 'La casa es pequeñ[a].|size:small:🏠'], ['El perro es [grande].|size:big:🐕', 'La casa es [grande].|size:big:🏠'] ],
+    quiz: [ 'La pelota es [pequeña].|size:small:⚽|The ball is small.|pequeño', 'La flor es [pequeña].|size:small:🌷|The flower is small.|pequeño,pequeñas', 'El ratón es [pequeño].|🐭|The mouse is small.|pequeña' ],
+    card: 'pequeño · pequeña   ·   grande = grande',
+    en: '"pequeño" changes to "pequeña" for la-words, just like colors. "grande" ends in -e and stays the same.'
+   } },
+ { items: [
+    'alto|size:big:🏢|tall', 'bajo|size:small:🏢|short (height)', 'largo|len:long:rojo|long', 'corto|len:short:rojo|short (length)',
+    'El hombre es alto.|size:big:🧍‍♂️|The man is tall.', 'El hombre es bajo.|size:small:🧍‍♂️|The man is short.', 'La mujer es alta.|size:big:🧍‍♀️|The woman is tall.',
+    'La mujer es baja.|size:small:🧍‍♀️|The woman is short.', 'La jirafa es alta.|🦒|The giraffe is tall.', 'El lápiz es largo.|len:long:amarillo|The pencil is long.',
+    'El lápiz es corto.|len:short:amarillo|The pencil is short.', 'La serpiente es larga.|🐍|The snake is long.'
+   ],
+   review: ['El perro es grande.', 'La casa es pequeña.'],
+   fills: [ 'La mujer es [alta].|size:big:🧍‍♀️|The woman is tall.|alto,altas', 'El lápiz es [corto].|len:short:amarillo|The pencil is short.|corta,bajo', 'La jirafa es [alta].|🦒|The giraffe is tall.|baja,alto' ] },
+ { items: [
+    'rápido|⚡🏃|fast', 'lento|🐌|slow', 'El carro es rápido.|🏎️|The car is fast.', 'El tren es rápido.|🚄|The train is fast.', 'La tortuga es lenta.|🐢|The turtle is slow.',
+    'El conejo es rápido.|🐇|The rabbit is fast.', 'La casa es nueva.|🏡✨|The house is new.', 'La casa es vieja.|🏚️|The house is old.', 'El carro es nuevo.|🚘✨|The car is new.',
+    'El zapato es viejo.|🥾🕸️|The shoe is old.'
+   ],
+   fills: [ 'La tortuga es [lenta].|🐢|The turtle is slow.|lento,rápida', 'El conejo es [rápido].|🐇|The rabbit is fast.|rápida,lento', 'La casa es [vieja].|🏚️|The house is old.|viejo,nueva' ] },
+ { items: [
+    'muy|‼️|very', 'El dinosaurio es muy grande.|🦕|The dinosaur is very big.', 'La hormiga es muy pequeña.|🐜|The ant is very small.', 'El cohete es muy rápido.|🚀|The rocket is very fast.',
+    'El perezoso es muy lento.|🦥|The sloth is very slow.', 'El caracol no es rápido.|🐌🚫⚡|The snail is not fast.', 'El elefante no es pequeño.|🐘🚫🐭|The elephant is not small.',
+    'El perro no es azul.|svg:dog:café+🚫+svg:blob:azul|The dog is not blue.'
+   ],
+   pattern: {
+    groups: [ ['El caracol [no] es rápido.|🐌🚫⚡', 'El elefante [no] es pequeño.|🐘🚫🐭'], ['El cohete es [muy] rápido.|🚀', 'La hormiga es [muy] pequeña.|🐜'] ],
+    quiz: [ 'El ratón [no] es grande.|🐭🚫🐘|The mouse is not big.|muy', 'El dinosaurio es [muy] grande.|🦕|The dinosaur is very big.|no', 'La tortuga [no] es rápida.|🐢🚫⚡|The turtle is not fast.|muy' ],
+    card: 'no es …   ·   es muy …',
+    en: '"no" goes right before "es" (El caracol no es rápido). "muy" (very) goes right before the describing word (es muy rápido).'
+   } },
+ { items: [
+    'Los perros son grandes.|size:big:2*🐕|The dogs are big.', 'Las pelotas son pequeñas.|size:small:3*⚽|The balls are small.', 'Las tortugas son lentas.|2*🐢|The turtles are slow.',
+    'Los conejos son rápidos.|2*🐇|The rabbits are fast.', 'Mi perro es grande y negro.|size:big:svg:dog:negro|My dog is big and black.',
+    'Mi gato es pequeño y gris.|size:small:svg:cat:gris|My cat is small and gray.', '¿Cómo es tu perro?|🐕❓|What is your dog like?', 'Es muy bonito.|🐩✨|He\'s very pretty.'
+   ],
+   review: ['El ratón es pequeño.', 'La tortuga es lenta.'],
+   fills: [ 'Los conejos son [rápidos].|2*🐇|The rabbits are fast.|rápido,rápidas', 'Las pelotas son [pequeñas].|size:small:3*⚽|The balls are small.|pequeña,pequeños', 'Los perros [son] grandes.|size:big:2*🐕|The dogs are big.|es' ],
+   dialogue: { scene: '🐾', lines: [
+     'M|¿Cómo es tu perro, Sofía?|What is your dog like, Sofía?', 'S|Mi perro es pequeño y café.|My dog is small and brown.', 'M|¿Es rápido?|Is he fast?',
+     'S|¡Sí! Es muy rápido. ¿Y tu gato?|Yes! He\'s very fast. And your cat?', 'M|Mi gato es grande y gris. No es rápido. ¡Es muy lento!|My cat is big and gray. He isn\'t fast. He\'s very slow!' ],
+    replies: [
+     'M>¿Cómo es tu perro?|Mi perro es pequeño y café.|Me llamo Mateo.;La casa es vieja.|What is your dog like?|size:small:svg:dog:café',
+     'S>¿Es rápido el gato?|No, es muy lento.|Sí, es verde.;Muy bien, gracias.|Is the cat fast?|🐈💤',
+     'M>¿Cómo es el elefante?|Es muy grande.|Es muy pequeño.;Es azul.|What is the elephant like?|🐘' ] } }
+] });
+
+</script>
+<script>
+/* Unit 5 — Mi familia. "fam:role" draws Sofía's family tree with that person highlighted (⭐ = Sofía, "yo"). */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 5, lessons: [
+ { items: [
+    'la mamá|fam:mamá|the mom', 'el papá|fam:papá|the dad', 'la hermana|fam:hermana|the sister', 'el hermano|fam:hermano|the brother',
+    'la abuela|fam:abuela|the grandma', 'el abuelo|fam:abuelo|the grandpa', 'la familia|fam:all|the family', 'yo|fam:yo|I / me'
+   ],
+   fills: [ '[la] abuela|fam:abuela|the grandma|el', '[el] hermano|fam:hermano|the brother|la', '[el] papá|fam:papá|the dad|la' ] },
+ { items: [
+    'Ella es mi mamá.|fam:mamá|She is my mom.', 'Él es mi papá.|fam:papá|He is my dad.', 'Ella es mi hermana.|fam:hermana|She is my sister.',
+    'Él es mi hermano.|fam:hermano|He is my brother.', 'Ella es mi abuela.|fam:abuela|She is my grandma.', 'Él es mi abuelo.|fam:abuelo|He is my grandpa.',
+    'Yo soy Sofía.|fam:yo|I am Sofía.', 'Es mi familia.|fam:all|It\'s my family.'
+   ],
+   pattern: {
+    groups: [ ['[Él] es mi papá.|fam:papá', '[Él] es mi hermano.|fam:hermano'], ['[Ella] es mi mamá.|fam:mamá', '[Ella] es mi abuela.|fam:abuela'] ],
+    quiz: [ '[Ella] es mi hermana.|fam:hermana|She is my sister.|Él', '[Él] es mi abuelo.|fam:abuelo|He is my grandpa.|Ella', '[Ella] es mi mamá.|fam:mamá|She is my mom.|Él' ],
+    card: 'él 👨   ·   ella 👩',
+    en: '"él" = he, "ella" = she. Note: "él" (he) has an accent; "el" (the) does not.'
+   } },
+ { items: [
+    'el tío|fam:tío|the uncle', 'la tía|fam:tía|the aunt', 'el primo|fam:primo|the cousin (boy)', 'la prima|fam:prima|the cousin (girl)', 'la mascota|fam:mascota|the pet',
+    'Él es mi tío.|fam:tío+👈|He is my uncle.', 'Ella es mi prima.|fam:prima+👈|She is my cousin.', 'Mi tía es muy alta.|👩🏻‍🦰📏|My aunt is very tall.',
+    'Mi mascota se llama Chispa.|🐕📛|My pet\'s name is Chispa.'
+   ],
+   review: ['Ella es mi abuela.', 'el hermano'],
+   fills: [ '[la] tía|fam:tía|the aunt|el', 'Él es mi [primo].|fam:primo|He is my cousin.|prima,tía', 'Ella es mi [tía].|fam:tía|She is my aunt.|tío,prima' ] },
+ { items: [
+    'Tengo una hermana.|🧒🏽+👧🏽|I have a sister.', 'Tengo un hermano.|🧒🏽+👦🏽|I have a brother.', 'Tengo un perro.|🧒🏽+🐕|I have a dog.', 'No tengo gato.|🧒🏽+🚫🐈|I don\'t have a cat.',
+    '¿Tienes hermanos?|👉👦🏽👧🏽❓|Do you have brothers and sisters?', 'Sí, tengo un hermano.|👍+👦🏽|Yes, I have a brother.', 'No, no tengo hermanos.|🙅‍♀️+👦🏽👧🏽|No, I don\'t have brothers or sisters.',
+    '¿Tienes una mascota?|👉🐾❓|Do you have a pet?'
+   ],
+   pattern: {
+    groups: [ ['[Tengo] un perro.|🧒🏽+🐕', '[Tengo] una hermana.|🧒🏽+👧🏽'], ['¿[Tienes] un perro?|👉🐕❓', '¿[Tienes] hermanos?|👉👦🏽👧🏽❓'] ],
+    quiz: [ '¿[Tienes] una mascota?|👉🐾❓|Do you have a pet?|Tengo', '[Tengo] un hermano.|🧒🏽+👦🏽|I have a brother.|Tienes', 'No [tengo] gato.|🧒🏽+🚫🐈|I don\'t have a cat.|tienes' ],
+    card: 'yo tengo   ·   tú tienes',
+    en: '"tengo" = I have; "tienes" = you have. To say "don\'t have", put "no" first: No tengo gato.'
+   },
+   dialogue: { scene: '🏡', lines: [
+     'V|¿Tienes hermanos?|Do you have brothers and sisters?', 'S|Sí, tengo un hermano y una hermana. ¿Y tú?|Yes, I have a brother and a sister. And you?',
+     'V|No tengo hermanos, pero tengo un perro.|I don\'t have brothers or sisters, but I have a dog.', 'S|¿Cómo se llama?|What\'s his name?', 'V|Se llama Chispa.|His name is Chispa.' ],
+    replies: [
+     'V>¿Tienes hermanos?|Sí, tengo una hermana.|Me llamo Chispa.;Igualmente.|Do you have brothers and sisters?',
+     'S>¿Tienes un perro?|Sí, tengo un perro.|Sí, es mi abuela.;De nada.|Do you have a dog?|🐕',
+     'V>¿Cómo se llama tu perro?|Se llama Chispa.|Tengo un perro.;Es café.|What\'s your dog\'s name?|🐕📛' ] } },
+ { items: [
+    'mis abuelos|fam:abuelo,abuela|my grandparents', 'mis padres|fam:papá,mamá|my parents', 'mis hermanos|fam:hermano,hermana|my brother and sister',
+    'mis primos|fam:primo,prima|my cousins', 'Mis abuelos son muy simpáticos.|👴🏽👵🏽😊|My grandparents are very nice.', 'Mi familia es grande.|👨‍👩‍👧‍👦👴🏽👵🏽|My family is big.',
+    '¿Cómo es tu familia?|👪❓|What is your family like?', 'Mis primos son pequeños.|👦🏻👧🏻🤏|My cousins are little.'
+   ],
+   pattern: {
+    groups: [ ['[mi] abuelo|fam:abuelo', '[mi] hermana|fam:hermana'], ['[mis] abuelo[s]|fam:abuelo,abuela', '[mis] herman[os]|fam:hermano,hermana'] ],
+    quiz: [ '[mis] padres|fam:papá,mamá|my parents|mi', '[mi] tía|fam:tía|my aunt|mis', '[mis] primos|fam:primo,prima|my cousins|mi' ],
+    card: 'mi + 1   ·   mis + 2, 3, 4…',
+    en: '"mi" = my (one), "mis" = my (more than one). "mis hermanos" can mean brothers, or brothers and sisters together.'
+   },
+   dialogue: { scene: '🖼️', lines: [
+     'M|¿Cómo es tu familia, Sofía?|What is your family like, Sofía?', 'S|Mi familia es grande. Tengo un hermano, una hermana y muchos primos.|My family is big. I have a brother, a sister and lots of cousins.',
+     'M|¿Y tus abuelos?|And your grandparents?', 'S|Mis abuelos son muy simpáticos.|My grandparents are very nice.', 'M|¡Qué bien!|How nice!' ],
+    replies: [
+     'M>¿Cómo es tu familia?|Mi familia es grande.|Me llamo Mateo.;Es un perro.|What is your family like?|👨‍👩‍👧‍👦👴🏽👵🏽',
+     'M>¿Cómo son tus abuelos?|Mis abuelos son muy simpáticos.|Mi abuelo es azul.;No, gracias.|What are your grandparents like?|👴🏽👵🏽😊',
+     'S>¿Tienes primos?|Sí, tengo muchos primos.|Sí, por favor.;Es mi mamá.|Do you have cousins?|👦🏻👧🏻' ] } }
+] });
+
+</script>
+<script>
+/* Unit 6 — Los números. "num:7" = number badge, "3*🐱" = three cats. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 6, lessons: [
+ { items: [
+    'uno|num:1|one', 'dos|num:2|two', 'tres|num:3|three', 'cuatro|num:4|four', 'cinco|num:5|five',
+    'un gato|1*🐱|one cat', 'dos gatos|2*🐱|two cats', 'tres perros|3*🐶|three dogs', 'cuatro flores|4*🌷|four flowers', 'cinco pelotas|5*⚽|five balls'
+   ],
+   pattern: {
+    groups: [ ['[uno]|num:1'], ['[un] gato|1*🐱', '[una] flor|1*🌷'], ['dos gato[s]|2*🐱', 'cuatro flor[es]|4*🌷'] ],
+    quiz: [ '[un] perro|1*🐶|one dog|uno', '[una] pelota|1*⚽|one ball|uno', 'tres [gatos]|3*🐱|three cats|gato' ],
+    card: 'uno → un gato · una flor   ·   dos gatos',
+    en: 'Counting, you say "uno"; before a thing it becomes "un" (un gato) or "una" (una flor). After 2, 3, 4… the thing is plural.'
+   } },
+ { items: [
+    'cero|num:0|zero', 'seis|num:6|six', 'siete|num:7|seven', 'ocho|num:8|eight', 'nueve|num:9|nine', 'diez|num:10|ten',
+    'seis manzanas|6*🍎|six apples', 'siete estrellas|7*⭐|seven stars', 'ocho peces|8*🐟|eight fish', 'diez dedos|🖐️🖐️|ten fingers'
+   ],
+   review: ['tres', 'cinco pelotas'],
+   fills: [ '[siete] estrellas|7*⭐|seven stars|seis,ocho', '[nueve] libros|9*📕|nine books|diez,siete', '[ocho] peces|8*🐟|eight fish|seis,nueve' ] },
+ { items: [
+    'once|num:11|eleven', 'doce|num:12|twelve', 'trece|num:13|thirteen', 'catorce|num:14|fourteen', 'quince|num:15|fifteen',
+    'dieciséis|num:16|sixteen', 'diecisiete|num:17|seventeen', 'dieciocho|num:18|eighteen', 'diecinueve|num:19|nineteen', 'veinte|num:20|twenty'
+   ],
+   review: ['diez', 'seis'],
+   pattern: {
+    groups: [ ['[dieci]séis|num:16', '[dieci]siete|num:17'], ['[dieci]ocho|num:18', '[dieci]nueve|num:19'] ],
+    quiz: [ '[dieci]siete|num:17|seventeen|once', '[dieci]nueve|num:19|nineteen|doce' ],
+    card: '16 = diez y seis → dieciséis',
+    en: 'Sixteen to nineteen are built as "ten and six" squeezed into one word: dieciséis, diecisiete, dieciocho, diecinueve.'
+   } },
+ { items: [
+    'Hay tres pelotas.|3*🏀|There are three balls.', 'Hay dos perros.|2*🐕|There are two dogs.', 'Hay cinco flores.|5*🌻|There are five flowers.',
+    'Hay ocho lápices.|8*✏️|There are eight pencils.', 'Hay doce huevos.|12*🥚|There are twelve eggs.', 'Hay una manzana.|1*🍏|There is one apple.',
+    '¿Cuántos perros hay?|🐕❓|How many dogs are there?', '¿Cuántas flores hay?|🌻❓|How many flowers are there?'
+   ],
+   pattern: {
+    groups: [ ['¿[Cuántos] perros hay?|🐕❓', '¿[Cuántos] gatos hay?|🐈❓'], ['¿[Cuántas] flores hay?|🌻❓', '¿[Cuántas] pelotas hay?|🏀❓'] ],
+    quiz: [ '¿[Cuántas] manzanas hay?|🍏❓|How many apples are there?|Cuántos', '¿[Cuántos] libros hay?|📚❓|How many books are there?|Cuántas', '¿[Cuántos] huevos hay?|🥚❓|How many eggs are there?|Cuántas' ],
+    card: 'hay = there is / there are   ·   ¿cuántos …? (el) · ¿cuántas …? (la)',
+    en: '"hay" means both "there is" and "there are". "¿Cuántos?" goes with el-words (perros), "¿Cuántas?" with la-words (flores).'
+   },
+   dialogue: { scene: '🧺', lines: [
+     'S|¿Cuántos perros hay?|How many dogs are there?', 'M|Hay dos perros.|There are two dogs.', 'S|¿Y cuántas flores hay?|And how many flowers are there?',
+     'M|Uno, dos, tres, cuatro, cinco… ¡Hay cinco flores!|One, two, three, four, five… There are five flowers!' ],
+    replies: [
+     'S>¿Cuántos perros hay?|Hay dos perros.|Hay tres perros.;Hay dos gatos.|How many dogs are there?|2*🐕',
+     'M>¿Cuántas pelotas hay?|Hay tres pelotas.|Hay cuatro pelotas.;Hay tres flores.|How many balls are there?|3*🏀',
+     'S>¿Cuántos huevos hay?|Hay doce huevos.|Hay diez huevos.;Hay doce lápices.|How many eggs are there?|12*🥚' ] } },
+ { items: [
+    '¿Cuántos años tienes?|🎂❓|How old are you?', 'Tengo once años.|🎂+num:11|I\'m eleven.', 'Tengo trece años.|🎂+num:13|I\'m thirteen.',
+    'Tengo doce años.|🎂+num:12|I\'m twelve.', 'Mi hermano tiene ocho años.|👦🏽+🎂+num:8|My brother is eight.', 'Mi prima tiene cinco años.|👧🏻+🎂+num:5|My cousin is five.',
+    '¡Feliz cumpleaños!|🎂🎈🎁|Happy birthday!', 'el cumpleaños|🎉📅|the birthday'
+   ],
+   pattern: {
+    groups: [ ['[Tengo] once años.|🎂+num:11'], ['¿Cuántos años [tienes]?|🎂❓'], ['Mi hermano [tiene] ocho años.|👦🏽+🎂+num:8'] ],
+    quiz: [ 'Yo [tengo] trece años.|🎂+num:13|I am thirteen.|tiene', 'Mi prima [tiene] cinco años.|👧🏻+🎂+num:5|My cousin is five.|tengo', '¿Cuántos años [tienes]?|🎂❓|How old are you?|tengo' ],
+    card: 'tengo · tienes · tiene  + … años',
+    en: 'Spanish uses "have" for age: Tengo once años = I am 11 (literally "I have 11 years"). tengo = I have, tienes = you have, tiene = he/she has.'
+   },
+   dialogue: { scene: '🎉', lines: [
+     'M|¡Feliz cumpleaños, Sofía!|Happy birthday, Sofía!', 'S|¡Gracias, Mateo!|Thanks, Mateo!', 'M|¿Cuántos años tienes?|How old are you?',
+     'S|Tengo doce años. ¿Y tú?|I\'m twelve. And you?', 'M|Tengo once años.|I\'m eleven.' ],
+    replies: [
+     'M>¡Feliz cumpleaños!|¡Gracias!|De nada.;¡Buenas noches!|Happy birthday!|🎂🎈🎁',
+     'S>¿Cuántos años tienes?|Tengo once años.|Hay once gatos.;Es un gato.|How old are you?|🎂+num:11',
+     'M>¿Cuántos años tiene tu hermano?|Mi hermano tiene ocho años.|Mi hermano es alto.;Tengo un perro.|How old is your brother?|👦🏽+🎂+num:8' ] } }
+] });
+
+</script>
+<script>
+/* Unit 7 — En la escuela. "pos:on:A@B" draws A on / under / in / next to B. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 7, lessons: [
+ { items: [
+    'el lápiz|✏️|the pencil', 'el libro|📕|the book', 'el cuaderno|📓|the notebook', 'la mochila|🎒|the backpack', 'la regla|📏|the ruler',
+    'las tijeras|✂️|the scissors', 'la computadora|💻|the computer', 'el bolígrafo|🖊️|the pen',
+    'En mi mochila hay un libro y un cuaderno.|🎒+📕📓|In my backpack there is a book and a notebook.', 'Necesito las tijeras.|🙋‍♀️✂️|I need the scissors.'
+   ],
+   pattern: {
+    groups: [ ['el libr[o]|📕', 'los libr[os]|3*📕'], ['el lápi[z]|✏️', 'los lápi[ces]|3*✏️'] ],
+    quiz: [ '[los] cuadernos|3*📓|the notebooks|las', 'tres [lápices]|3*✏️|three pencils|lápiz', '[las] reglas|3*📏|the rulers|los' ],
+    card: 'libro → libros   ·   lápiz → lápices',
+    en: 'Most words just add -s. Words ending in -z change z to c and add -es: el lápiz → los lápices.'
+   } },
+ { items: [
+    'la maestra|👩🏽‍🏫|the teacher (woman)', 'el maestro|👨🏻‍🏫|the teacher (man)', 'el estudiante|👦🏻🎒|the student (boy)', 'la estudiante|👧🏽🎒|the student (girl)',
+    'la silla|🪑|the chair', 'el escritorio|svg:desk:café|the desk', 'el pizarrón|svg:board:verde|the board', 'la clase|👩🏽‍🏫+👧🏽👦🏻👦🏾|the class',
+    'Hay veinte estudiantes en la clase.|🏫+num:20|There are twenty students in the class.', 'La maestra escribe en el pizarrón.|👩🏽‍🏫+svg:board:verde|The teacher writes on the board.'
+   ],
+   review: ['la mochila', 'el lápiz'],
+   pattern: {
+    groups: [ ['[el] maestr[o]|👨🏻‍🏫', '[la] maestr[a]|👩🏽‍🏫'], ['[el] estudiante|👦🏻🎒', '[la] estudiante|👧🏽🎒'] ],
+    quiz: [ '[la] estudiante|👧🏽🎒|the student (girl)|el', '[el] maestro|👨🏻‍🏫|the teacher (man)|la', '[el] estudiante|👦🏻🎒|the student (boy)|la' ],
+    card: 'el maestro · la maestra   ·   el estudiante · la estudiante',
+    en: 'Some people-words change -o/-a (maestro/maestra); words ending in -e (estudiante) stay the same and only el/la changes.'
+   } },
+ { items: [
+    'sobre|pos:on:🍎@svg:desk:café|on (top of)', 'debajo de|pos:under:🍎@svg:desk:café|under', 'al lado de|pos:next:🍎@svg:desk:café|next to', 'en|pos:in:🍎@🎒|in',
+    'El libro está sobre el escritorio.|pos:on:📕@svg:desk:café|The book is on the desk.', 'La pelota está debajo de la silla.|pos:under:⚽@🪑|The ball is under the chair.',
+    'El lápiz está en la mochila.|pos:in:✏️@🎒|The pencil is in the backpack.', 'El gato está al lado de la silla.|pos:next:🐱@🪑|The cat is next to the chair.',
+    '¿Dónde está el lápiz?|✏️❓🔍|Where is the pencil?', '¿Dónde está mi mochila?|🎒❓🔍|Where is my backpack?'
+   ],
+   pattern: {
+    groups: [ ['El libro [está] sobre el escritorio.|pos:on:📕@svg:desk:café', 'La pelota [está] debajo de la silla.|pos:under:⚽@🪑'],
+              ['Los lápices [están] en la mochila.|pos:in:3*✏️@🎒', 'Los libros [están] sobre el escritorio.|pos:on:3*📕@svg:desk:café'] ],
+    quiz: [ 'El gato [está] al lado de la silla.|pos:next:🐱@🪑|The cat is next to the chair.|están', 'Los libros [están] sobre el escritorio.|pos:on:3*📕@svg:desk:café|The books are on the desk.|está',
+            'La regla [está] en la mochila.|pos:in:📏@🎒|The ruler is in the backpack.|es' ],
+    card: '¿Dónde? → está (1) · están (2+)',
+    en: 'To say WHERE something is, Spanish uses "está" (one thing) or "están" (more than one), not "es".'
+   } },
+ { items: [
+    'las matemáticas|➕➗📐|math', 'las ciencias|🔬🧪|science', 'el arte|🎨🖌️|art', 'la música|🎵🎹|music', 'la educación física|🏃‍♀️🏀|PE (gym class)',
+    'el inglés|🔤📖|English (class)', 'el español|ñ ¿ ¡|Spanish (class)', 'la historia|🏛️📜|history',
+    'Mi clase favorita es el arte.|🎨⭐|My favorite class is art.', 'Las matemáticas son difíciles.|➕➗😓|Math is hard.', 'La música es divertida.|🎵😄|Music is fun.'
+   ],
+   fills: [ 'Las matemáticas [son] difíciles.|➕➗😓|Math is hard.|es', 'El arte [es] divertido.|🎨😄|Art is fun.|son', 'Mi clase [favorita] es la música.|🎵⭐|My favorite class is music.|favorito' ] },
+ { items: [
+    'el recreo|🛝⚽|recess', 'el almuerzo|🥪🍎|lunch', 'la cafetería|🍽️🏫|the cafeteria', 'la biblioteca|📚🏛️|the library', 'el gimnasio|🏀🏟️|the gym',
+    '¿Dónde está la biblioteca?|📚🏛️❓|Where is the library?', '¡Vamos al recreo!|🏃‍♀️🛝|Let\'s go to recess!', '¿Me prestas un lápiz?|🙏✏️|Can I borrow a pencil?'
+   ],
+   review: ['El lápiz está en la mochila.', 'la maestra'],
+   dialogue: { scene: '🏫', lines: [
+     'P|¡Buenos días, clase!|Good morning, class!', 'S|¡Buenos días, maestra!|Good morning, teacher!', 'P|Mateo, ¿dónde está tu libro?|Mateo, where is your book?',
+     'M|Mi libro está en la mochila.|My book is in the backpack.', 'P|Muy bien. ¿Tienes un lápiz?|Very good. Do you have a pencil?',
+     'M|No. Sofía, ¿me prestas un lápiz?|No. Sofía, can I borrow a pencil?', 'S|Sí, aquí tienes.|Yes, here you go.', 'M|¡Gracias!|Thanks!' ],
+    replies: [
+     'P>¿Dónde está tu libro?|Mi libro está en la mochila.|Mi libro es rojo.;Tengo once años.|Where is your book?|pos:in:📕@🎒',
+     'M>¿Me prestas un lápiz?|Sí, aquí tienes.|Me llamo Sofía.;Es el arte.|Can I borrow a pencil?|🙏✏️',
+     'S>¿Cuál es tu clase favorita?|Mi clase favorita es la música.|Mi clase es grande.;Hay veinte estudiantes.|What\'s your favorite class?|🎵⭐',
+     'P>¡Buenos días, clase!|¡Buenos días, maestra!|¡Buenas noches!;De nada.|Good morning, class!' ] } }
+] });
+
+</script>
+<script>
+/* Unit 8 — Mi casa. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 8, lessons: [
+ { items: [
+    'la cocina|🍳🥘|the kitchen', 'el baño|🛁🚽|the bathroom', 'la sala|🛋️📺|the living room', 'el cuarto|🛏️🧸|the bedroom', 'el comedor|🍽️🪑|the dining room',
+    'el jardín|🌳🌷|the yard / garden', 'Mi casa tiene tres cuartos.|🏠+3*🛏️|My house has three bedrooms.', 'El baño es pequeño.|size:small:🛁|The bathroom is small.'
+   ],
+   fills: [ 'El [baño] es pequeño.|size:small:🛁|The bathroom is small.|jardín,comedor', 'Mi casa tiene tres [cuartos].|🏠+3*🛏️|My house has three bedrooms.|cuarto,cocinas' ] },
+ { items: [
+    'la cama|🛏️|the bed', 'el sofá|🛋️|the sofa', 'la puerta|🚪|the door', 'la ventana|🪟|the window', 'la lámpara|svg:lamp:amarillo|the lamp',
+    'el refrigerador|svg:fridge:blanco|the refrigerator', 'la mesa|svg:table:café|the table', 'el televisor|📺|the TV', 'La cama es grande.|size:big:🛏️|The bed is big.',
+    'La puerta es azul.|🚪💙|The door is blue.'
+   ],
+   review: ['la cocina', 'el cuarto'],
+   fills: [ 'La [lámpara] es amarilla.|svg:lamp:amarillo|The lamp is yellow.|cama,mesa', 'El refrigerador es [blanco].|svg:fridge:blanco|The refrigerator is white.|blanca,negro', 'La mesa es [café].|svg:table:café|The table is brown.|cafés' ] },
+ { items: [
+    'Papá está en la cocina.|👨🏽+🍳🥘|Dad is in the kitchen.', 'Mamá está en el jardín.|👩🏽+🌳🌷|Mom is in the yard.', 'El perro está en la sala.|🐕+🛋️📺|The dog is in the living room.',
+    'La abuela está en el comedor.|👵🏽+🍽️🪑|Grandma is in the dining room.', 'Mi hermano está en el baño.|👦🏽+🛁🚽|My brother is in the bathroom.', '¿Dónde está papá?|👨🏽❓|Where is Dad?',
+    '¿Dónde estás?|👉❓🏠|Where are you?', 'Estoy en mi cuarto.|🧒🏽+🛏️🧸|I\'m in my room.'
+   ],
+   pattern: {
+    groups: [ ['[Estoy] en mi cuarto.|🧒🏽+🛏️🧸'], ['¿Dónde [estás]?|👉❓🏠'], ['Papá [está] en la cocina.|👨🏽+🍳🥘'] ],
+    quiz: [ '¿Dónde [estás]?|👉❓🏠|Where are you?|estoy', 'Mamá [está] en el jardín.|👩🏽+🌳🌷|Mom is in the yard.|estoy', '[Estoy] en la sala.|🧒🏽+🛋️📺|I\'m in the living room.|Está' ],
+    card: 'yo estoy · tú estás · él / ella está',
+    en: 'estar (to be, for location): estoy = I am, estás = you are, está = he/she/it is. "Estoy en la cocina" = I\'m in the kitchen.'
+   },
+   dialogue: { scene: '🏠', lines: [
+     'S|¡Mamá! ¿Dónde estás?|Mom! Where are you?', 'E|Estoy en el jardín.|I\'m in the yard.', 'S|¿Y dónde está papá?|And where is Dad?',
+     'E|Papá está en la cocina con la abuela.|Dad is in the kitchen with Grandma.', 'S|¡Qué bien! Tengo hambre.|Great! I\'m hungry.' ],
+    replies: [
+     'S>¿Dónde estás?|Estoy en el jardín.|Es un jardín.;Tengo un perro.|Where are you?|🌳🌷',
+     'S>¿Dónde está papá?|Papá está en la cocina.|Papá es alto.;Es mi papá.|Where is Dad?|👨🏽+🍳🥘',
+     'E>¿Dónde está el perro?|El perro está en la sala.|El perro es café.;Hay dos perros.|Where is the dog?|🐕+🛋️📺' ] } },
+ { items: [
+    'Hay un gato en la cama.|pos:on:🐈@🛏️|There is a cat on the bed.', 'Hay dos lámparas en la sala.|2*svg:lamp:amarillo+🛋️|There are two lamps in the living room.',
+    'Hay una mesa en el comedor.|svg:table:café+🍽️|There is a table in the dining room.', 'Hay muchas flores en el jardín.|5*🌷|There are lots of flowers in the yard.',
+    'No hay leche en el refrigerador.|svg:fridge:blanco+🚫🥛|There is no milk in the refrigerator.', '¿Qué hay en la cocina?|🍳🥘❓|What is there in the kitchen?',
+    'Hay un perro debajo de la mesa.|pos:under:🐕@svg:table:café|There is a dog under the table.'
+   ],
+   pattern: {
+    groups: [ ['[Hay] un gato en la cama.|pos:on:🐈@🛏️', '[Hay] muchas flores en el jardín.|5*🌷'], ['[El] gato [está] en la cama.|pos:on:🐈@🛏️', '[Mamá] [está] en el jardín.|👩🏽+🌳🌷'] ],
+    quiz: [ 'Mi mamá [está] en la cocina.|👩🏽+🍳🥘|My mom is in the kitchen.|hay', '[Hay] una mesa en el comedor.|svg:table:café+🍽️|There is a table in the dining room.|Está',
+            'El perro [está] debajo de la mesa.|pos:under:🐕@svg:table:café|The dog is under the table.|hay' ],
+    card: 'hay + un / una / dos …   ·   el / la / mi … + está',
+    en: '"hay" introduces something new (Hay un gato = there is a cat). "está" tells where a known, specific thing is (El gato está en la cama).'
+   } },
+ { items: [
+    'Mi cuarto es bonito.|🛏️🧸✨|My room is pretty.', 'En mi cuarto hay una cama y un escritorio.|🛏️+svg:desk:café|In my room there is a bed and a desk.',
+    'Mi lámpara es morada.|svg:lamp:morado|My lamp is purple.', 'Tengo muchos libros.|📚📚|I have lots of books.', 'Mi ventana es grande.|size:big:🪟|My window is big.',
+    'Mi cama está al lado de la ventana.|pos:next:🛏️@🪟|My bed is next to the window.', '¿Cómo es tu cuarto?|🛏️❓|What is your room like?'
+   ],
+   review: ['la cama', 'Hay un gato en la cama.'],
+   dialogue: { scene: '📱', lines: [
+     'V|¿Cómo es tu cuarto, Sofía?|What\'s your room like, Sofía?', 'S|Mi cuarto es pequeño, pero es bonito.|My room is small, but it\'s pretty.',
+     'S|Hay una cama, un escritorio y una lámpara morada.|There\'s a bed, a desk and a purple lamp.', 'V|¿Dónde está la cama?|Where is the bed?',
+     'S|Mi cama está al lado de la ventana.|My bed is next to the window.', 'V|¡Qué bonito!|How pretty!' ],
+    replies: [
+     'V>¿Cómo es tu cuarto?|Mi cuarto es bonito.|Mi cuarto está en la cocina.;Tengo doce años.|What is your room like?|🛏️🧸✨',
+     'V>¿Qué hay en tu cuarto?|Hay una cama y un escritorio.|Hay doce huevos.;Está en la sala.|What is in your room?|🛏️+svg:desk:café',
+     'S>¿Dónde está tu cama?|Mi cama está al lado de la ventana.|Mi cama es grande.;Es una ventana.|Where is your bed?|pos:next:🛏️@🪟' ] } }
+] });
+
+</script>
+<script>
+/* Unit 9 — La comida. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 9, lessons: [
+ { items: [
+    'la manzana|🍎|the apple', 'el plátano|🍌|the banana', 'la naranja|🍊|the orange', 'las uvas|🍇|the grapes', 'la fresa|🍓|the strawberry',
+    'la sandía|🍉|the watermelon', 'la piña|🍍|the pineapple', 'el mango|🥭|the mango', 'Las fresas son rojas.|3*🍓|The strawberries are red.', 'El plátano es amarillo.|🍌✨|The banana is yellow.'
+   ],
+   fills: [ 'La fresa es [roja].|🍓|The strawberry is red.|rojo,rojas', 'Las uvas son [moradas].|🍇|The grapes are purple.|morada,morados', 'El mango es [anaranjado].|🥭|The mango is orange.|anaranjada' ] },
+ { items: [
+    'el pan|🍞|the bread', 'el queso|🧀|the cheese', 'el huevo|🥚|the egg', 'el arroz|🍚|the rice', 'la pizza|🍕|the pizza', 'la sopa|🍲|the soup',
+    'el pollo|🍗|the chicken', 'la ensalada|🥗|the salad', 'los tacos|🌮|the tacos', 'la hamburguesa|🍔|the hamburger'
+   ],
+   review: ['la fresa', 'el plátano'],
+   fills: [ '[la] sopa|🍲|the soup|el', '[el] arroz|🍚|the rice|la', '[los] tacos|🌮|the tacos|las' ] },
+ { items: [
+    'el agua|🚰💧|the water', 'la leche|🥛|the milk', 'el jugo|🧃|the juice', 'el chocolate caliente|☕🍫|hot chocolate', 'Tengo hambre.|😋🍽️|I\'m hungry.',
+    'Tengo sed.|👅💧|I\'m thirsty.', 'Quiero agua, por favor.|🙋‍♀️🚰|I want water, please.', 'El agua está fría.|🚰🧊|The water is cold.'
+   ],
+   pattern: {
+    groups: [ ['[Tengo] hambre.|😋🍽️', '[Tengo] sed.|👅💧'], ['[el] agua [fría]|🚰🧊'] ],
+    quiz: [ '[Tengo] sed.|👅💧|I\'m thirsty.|Estoy', 'Mi hermano [tiene] hambre.|👦🏽😋🍽️|My brother is hungry.|está', 'El agua está [fría].|🚰🧊|The water is cold.|frío' ],
+    card: 'tengo hambre · tengo sed   ·   el agua fría',
+    en: 'Spanish says "I have hunger / thirst": Tengo hambre, Tengo sed. Special case: "agua" uses "el" for sound, but it is a la-word, so it\'s "el agua fría".'
+   } },
+ { items: [
+    'Me gusta la pizza.|😋🍕|I like pizza.', 'No me gusta la sopa.|😖🍲|I don\'t like soup.', 'Me gustan las fresas.|😋🍓🍓|I like strawberries.',
+    'No me gustan los huevos.|😖🥚🥚|I don\'t like eggs.', '¿Te gusta el queso?|👉🧀❓|Do you like cheese?', 'Sí, me gusta mucho.|😍👍|Yes, I like it a lot.',
+    'Me gusta el chocolate.|😋🍫|I like chocolate.', 'Me gustan los tacos.|😋🌮🌮|I like tacos.'
+   ],
+   pattern: {
+    groups: [ ['Me [gusta] la pizza.|😋🍕', 'Me [gusta] el chocolate.|😋🍫'], ['Me [gustan] las fresas.|😋🍓🍓', 'Me [gustan] los tacos.|😋🌮🌮'] ],
+    quiz: [ 'Me [gustan] las uvas.|😋🍇🍇|I like grapes.|gusta', 'No me [gusta] la ensalada.|😖🥗|I don\'t like salad.|gustan', '¿Te [gustan] los plátanos?|👉🍌🍌❓|Do you like bananas?|gusta',
+            'Me [gusta] el arroz.|😋🍚|I like rice.|gustan' ],
+    card: 'me gusta + 1   ·   me gustan + 2, 3…',
+    en: '"Me gusta" = I like (one thing). For plural things use "me gustan": Me gustan las fresas. "No me gusta" = I don\'t like.'
+   },
+   dialogue: { scene: '🍕', lines: [
+     'M|¿Te gusta la pizza?|Do you like pizza?', 'S|¡Sí, me gusta mucho! ¿Y a ti?|Yes, I like it a lot! And you?', 'M|Sí. Pero no me gustan los champiñones.|Yes. But I don\'t like mushrooms.',
+     'S|A mí sí me gustan.|I do like them.' ],
+    replies: [
+     'M>¿Te gusta la pizza?|Sí, me gusta mucho.|Sí, me gustan.;Tengo sed.|Do you like pizza?|🍕',
+     'S>¿Te gustan las fresas?|Sí, me gustan las fresas.|Sí, me gusta la sopa.;Es roja.|Do you like strawberries?|🍓🍓',
+     'M>¿Te gusta la sopa?|No, no me gusta la sopa.|No, no tengo hermanos.;Sí, está en la cocina.|Do you like soup?|🍲' ] } },
+ { items: [
+    'el desayuno|🥣🌅|breakfast', 'el almuerzo|🥪🍎|lunch', 'la cena|🍝🌙|dinner', 'Quiero pan, por favor.|🙋‍♀️🍞|I want bread, please.',
+    'Quiero un vaso de leche.|🙋‍♀️🥛|I want a glass of milk.', '¿Qué quieres?|👉🍽️❓|What do you want?', 'La comida está deliciosa.|😋✨🍲|The food is delicious.',
+    'En el desayuno como cereal.|🥣🌅+😋|For breakfast I eat cereal.'
+   ],
+   review: ['Tengo hambre.', 'Me gusta la pizza.'],
+   dialogue: { scene: '🌅', lines: [
+     'E|¡Buenos días, Sofía! ¿Qué quieres para el desayuno?|Good morning, Sofía! What do you want for breakfast?', 'S|Quiero cereal con leche, por favor.|I want cereal with milk, please.',
+     'E|¿Y quieres jugo?|And do you want juice?', 'S|Sí, un jugo de naranja, por favor.|Yes, an orange juice, please.', 'E|Aquí tienes.|Here you go.',
+     'S|¡Gracias, mamá! Está delicioso.|Thanks, Mom! It\'s delicious.' ],
+    replies: [
+     'E>¿Qué quieres para el desayuno?|Quiero cereal con leche, por favor.|Tengo sed.;Me llamo Sofía.|What do you want for breakfast?|🥣🌅',
+     'E>¿Quieres jugo?|Sí, por favor.|Sí, es mi mamá.;No, no tengo gato.|Do you want juice?|🧃',
+     'S>¿Te gusta la comida?|Sí, está deliciosa.|Sí, está en la cocina.;Sí, tengo doce años.|Do you like the food?|😋✨🍲' ] } }
+] });
+
+</script>
+<script>
+/* Unit 10 — Los días y la hora. "week:5" highlights sábado; "clock:3:30" shows a clock. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 10, lessons: [
+ { items: [
+    'lunes|week:0|Monday', 'martes|week:1|Tuesday', 'miércoles|week:2|Wednesday', 'jueves|week:3|Thursday', 'viernes|week:4|Friday',
+    'sábado|week:5|Saturday', 'domingo|week:6|Sunday', 'la semana|week:a|the week', 'el fin de semana|week:56|the weekend'
+   ] },
+ { items: [
+    'hoy|📍📅|today', 'mañana|➡️📅|tomorrow', 'ayer|⬅️📅|yesterday', '¿Qué día es hoy?|📍📅❓|What day is today?', 'Hoy es lunes.|📍+week:0|Today is Monday.',
+    'Hoy es viernes.|📍+week:4|Today is Friday.', 'Mañana es sábado.|➡️+week:5|Tomorrow is Saturday.', 'El sábado no hay escuela.|week:5+🚫🏫|On Saturday there is no school.',
+    'El lunes hay escuela.|week:0+🏫|On Monday there is school.'
+   ],
+   review: ['miércoles', 'domingo'],
+   pattern: {
+    groups: [ ['[El] sábado no hay escuela.|week:5+🚫🏫', '[El] lunes hay escuela.|week:0+🏫'], ['Hoy es [lunes].|📍+week:0', 'Mañana es [sábado].|➡️+week:5'] ],
+    quiz: [ '[El] domingo no hay escuela.|week:6+🚫🏫|On Sunday there is no school.|En', 'Hoy es [martes].|📍+week:1|Today is Tuesday.|Martes', '[El] viernes hay escuela.|week:4+🏫|On Friday there is school.|En' ],
+    card: 'el lunes = on Monday   ·   días en minúscula: lunes, martes…',
+    en: 'Days are not capitalized in Spanish. "On Monday" is just "el lunes" (no word for "on").'
+   } },
+ { items: [
+    '¿Qué hora es?|⌚❓|What time is it?', 'Es la una.|clock:1:00|It\'s one o\'clock.', 'Son las dos.|clock:2:00|It\'s two o\'clock.', 'Son las tres.|clock:3:00|It\'s three o\'clock.',
+    'Son las cinco.|clock:5:00|It\'s five o\'clock.', 'Son las ocho.|clock:8:00|It\'s eight o\'clock.', 'Son las diez.|clock:10:00|It\'s ten o\'clock.', 'Son las doce.|clock:12:00|It\'s twelve o\'clock.'
+   ],
+   pattern: {
+    groups: [ ['[Es la] una.|clock:1:00'], ['[Son las] dos.|clock:2:00', '[Son las] ocho.|clock:8:00'] ],
+    quiz: [ '[Son las] cuatro.|clock:4:00|It\'s four o\'clock.|Es la', '[Es la] una.|clock:1:00|It\'s one o\'clock.|Son las', '[Son las] once.|clock:11:00|It\'s eleven o\'clock.|Es la' ],
+    card: '1 → Es la una   ·   2, 3, 4… → Son las …',
+    en: 'One o\'clock is singular: "Es la una." All other hours are plural: "Son las dos, son las tres…"'
+   } },
+ { items: [
+    'y media|clock:6:30|half past', 'y cuarto|clock:6:15|quarter past', 'Son las tres y media.|clock:3:30|It\'s three thirty.', 'Es la una y media.|clock:1:30|It\'s one thirty.',
+    'Son las cuatro y cuarto.|clock:4:15|It\'s a quarter past four.', 'Son las siete y cuarto.|clock:7:15|It\'s a quarter past seven.', 'Son las nueve y media.|clock:9:30|It\'s nine thirty.',
+    'Son las once y media.|clock:11:30|It\'s eleven thirty.'
+   ],
+   review: ['Son las tres.', 'Es la una.'],
+   fills: [ 'Son las dos y [media].|clock:2:30|It\'s two thirty.|cuarto', 'Son las ocho y [cuarto].|clock:8:15|It\'s a quarter past eight.|media', '[Es] la una y cuarto.|clock:1:15|It\'s a quarter past one.|Son' ] },
+ { items: [
+    'La escuela empieza a las ocho.|🏫+clock:8:00|School starts at eight.', 'Como a las doce.|🥪+clock:12:00|I eat at twelve.', 'El lunes tengo música.|week:0+🎵|On Monday I have music.',
+    'El miércoles tengo arte.|week:2+🎨|On Wednesday I have art.', 'El viernes tengo educación física.|week:4+🏃‍♀️|On Friday I have PE.', 'Los sábados juego al golf.|week:5+⛳|On Saturdays I play golf.',
+    '¿A qué hora?|⌚➡️❓|At what time?', 'a las cuatro|clock:4:00+➡️|at four o\'clock'
+   ],
+   pattern: {
+    groups: [ ['[Son las] ocho.|clock:8:00', 'La escuela empieza [a las] ocho.|🏫+clock:8:00'], ['[Es la] una.|clock:1:00', 'Como [a la] una.|🥪+clock:1:00'] ],
+    quiz: [ 'La escuela empieza [a las] ocho.|🏫+clock:8:00|School starts at eight.|son las', 'Como [a la] una.|🥪+clock:1:00|I eat at one.|a las' ],
+    card: 'Son las ocho. → a las ocho   ·   Es la una. → a la una',
+    en: '"At" a time is "a las …" (a las ocho), or "a la una" for one o\'clock.'
+   },
+   dialogue: { scene: '📆', lines: [
+     'M|Sofía, ¿juegas al golf el sábado?|Sofía, are you playing golf on Saturday?', 'S|Sí, los sábados juego al golf.|Yes, on Saturdays I play golf.',
+     'M|¿A qué hora?|At what time?', 'S|A las nueve y media. ¿Y tú?|At nine thirty. And you?', 'M|El sábado tengo fútbol a las diez.|On Saturday I have soccer at ten.' ],
+    replies: [
+     'M>¿A qué hora empieza la escuela?|La escuela empieza a las ocho.|Hoy es lunes.;Tengo arte.|What time does school start?|🏫+clock:8:00',
+     'S>¿Qué día es hoy?|Hoy es viernes.|Son las cinco.;Mañana es la una.|What day is today?|📍+week:4',
+     'M>¿Qué hora es?|Son las tres y media.|Es la una y media.;Hoy es martes.|What time is it?|clock:3:30' ] } }
+] });
+
+</script>
+<script>
+/* Unit 11 — El tiempo y la ropa. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 11, lessons: [
+ { items: [
+    '¿Qué tiempo hace?|🌡️❓|What\'s the weather like?', 'Hace sol.|☀️😎|It\'s sunny.', 'Hace calor.|🥵|It\'s hot.', 'Hace frío.|🥶|It\'s cold.',
+    'Hace viento.|🌬️🍃|It\'s windy.', 'Llueve.|🌧️☔|It\'s raining.', 'Nieva.|🌨️⛄|It\'s snowing.', 'Está nublado.|☁️☁️|It\'s cloudy.'
+   ],
+   fills: [ 'Hace [frío].|🥶|It\'s cold.|calor,sol', 'Hace [viento].|🌬️🍃|It\'s windy.|frío,sol', 'Hace [calor].|🥵|It\'s hot.|frío,viento' ] },
+ { items: [
+    'la primavera|🌸🌱|spring', 'el verano|🏖️☀️|summer', 'el otoño|🍂🍁|fall', 'el invierno|☃️❄️|winter', 'En invierno hace frío.|☃️+🥶|In winter it\'s cold.',
+    'En verano hace calor.|🏖️+🥵|In summer it\'s hot.', 'En otoño hace viento.|🍂+🌬️|In fall it\'s windy.', 'En primavera llueve mucho.|🌸+🌧️|In spring it rains a lot.',
+    'Mi estación favorita es el verano.|🏖️⭐|My favorite season is summer.'
+   ],
+   review: ['Nieva.', 'Hace sol.'],
+   fills: [ 'En [invierno] nieva.|☃️+🌨️|In winter it snows.|verano', 'En verano hace [calor].|🏖️+🥵|In summer it\'s hot.|frío', 'Mi estación [favorita] es el otoño.|🍂⭐|My favorite season is fall.|favorito' ] },
+ { items: [
+    'la camisa|👕|the shirt', 'los pantalones|👖|the pants', 'la chaqueta|🧥|the jacket', 'los zapatos|👟👟|the shoes', 'la gorra|🧢|the cap',
+    'el vestido|👗|the dress', 'los calcetines|🧦|the socks', 'la bufanda|🧣|the scarf', 'los guantes|🧤|the gloves', 'los lentes de sol|🕶️|the sunglasses'
+   ],
+   fills: [ '[la] chaqueta|🧥|the jacket|el', '[los] calcetines|🧦|the socks|las', '[el] vestido|👗|the dress|la' ] },
+ { items: [
+    'Llevo una chaqueta.|🧒🏽+🧥|I\'m wearing a jacket.', 'Llevo una gorra roja.|🧒🏽+svg:cap:rojo|I\'m wearing a red cap.', 'Ella lleva un vestido rojo.|👩🏽+svg:dress:rojo|She\'s wearing a red dress.',
+    'Él lleva una camisa azul.|👨🏽+svg:shirt:azul|He\'s wearing a blue shirt.', 'Mateo lleva pantalones cortos.|👦🏻+🩳|Mateo is wearing shorts.', '¿Qué llevas?|👉👕❓|What are you wearing?',
+    'las botas|🥾|the boots', 'Llevo botas.|🧒🏽+🥾|I\'m wearing boots.'
+   ],
+   pattern: {
+    groups: [ ['[Llevo] una chaqueta.|🧒🏽+🧥'], ['¿Qué [llevas]?|👉👕❓'], ['Ella [lleva] un vestido rojo.|👩🏽+svg:dress:rojo'] ],
+    quiz: [ '¿Qué [llevas]?|👉👕❓|What are you wearing?|llevo', 'Él [lleva] una camisa azul.|👨🏽+svg:shirt:azul|He\'s wearing a blue shirt.|llevo', '[Llevo] botas.|🧒🏽+🥾|I\'m wearing boots.|Lleva' ],
+    card: 'yo llevo · tú llevas · él / ella lleva',
+    en: 'Verbs ending in -ar change their ending for each person: llevo (I wear), llevas (you wear), lleva (he/she wears).'
+   } },
+ { items: [
+    'Hace frío. Llevo una chaqueta.|🥶+🧥|It\'s cold. I\'m wearing a jacket.', 'Llueve. Llevo un paraguas.|🌧️+☂️|It\'s raining. I have an umbrella.',
+    'Hace sol. Llevo lentes de sol.|☀️+🕶️|It\'s sunny. I\'m wearing sunglasses.', 'Nieva. Llevo guantes y bufanda.|🌨️+🧤🧣|It\'s snowing. I\'m wearing gloves and a scarf.',
+    'Hace calor. Llevo pantalones cortos.|🥵+🩳|It\'s hot. I\'m wearing shorts.', '¿Qué llevas hoy?|👉👗❓📅|What are you wearing today?', 'el paraguas|☂️|the umbrella'
+   ],
+   review: ['la bufanda', 'Hace calor.'],
+   dialogue: { scene: '🚪', lines: [
+     'E|Sofía, hoy hace mucho frío.|Sofía, it\'s very cold today.', 'S|¿Nieva?|Is it snowing?', 'E|Sí, nieva. ¿Qué llevas?|Yes, it\'s snowing. What are you wearing?',
+     'S|Llevo una chaqueta, una bufanda y guantes.|I\'m wearing a jacket, a scarf and gloves.', 'E|¡Perfecto! ¿Y las botas?|Perfect! And your boots?', 'S|¡Ay! ¡Las botas!|Oops! The boots!' ],
+    replies: [
+     'E>Hace mucho frío. ¿Qué llevas?|Llevo una chaqueta.|Llevo lentes de sol.;Hace calor.|It\'s very cold. What are you wearing?|🥶',
+     'S>¿Qué tiempo hace?|Llueve.|Llevo botas.;Son las tres.|What\'s the weather like?|🌧️☔',
+     'E>Hace calor. ¿Qué llevas?|Llevo pantalones cortos.|Llevo guantes y bufanda.;Nieva mucho.|It\'s hot. What are you wearing?|🥵' ] } }
+] });
+
+</script>
+<script>
+/* Unit 12 — Los deportes. */
+globalThis.SL_UNITS = globalThis.SL_UNITS || [];
+globalThis.SL_UNITS.push({ n: 12, lessons: [
+ { items: [
+    'el fútbol|⚽🥅|soccer', 'el golf|⛳|golf', 'el básquetbol|🏀|basketball', 'el tenis|🎾|tennis', 'el béisbol|⚾|baseball', 'la natación|🏊‍♀️|swimming',
+    'el voleibol|🏐|volleyball', 'los deportes|⚽🏀🎾|sports'
+   ],
+   fills: [ '[el] golf|⛳|golf|la', '[la] natación|🏊‍♀️|swimming|el', '[los] deportes|⚽🏀🎾|sports|las' ] },
+ { items: [
+    'Juego al fútbol.|🧒🏽+⚽🥅|I play soccer.', 'Juego al golf.|🧒🏽+⛳|I play golf.', '¿Juegas al tenis?|👉🎾❓|Do you play tennis?', 'Ella juega al básquetbol.|👧🏾+🏀|She plays basketball.',
+    'Él juega al béisbol.|👦🏻+⚾|He plays baseball.', 'Mi hermana juega al golf.|👧🏽+🏌️‍♀️|My sister plays golf.', 'Nado los sábados.|🏊‍♀️+week:5|I swim on Saturdays.'
+   ],
+   review: ['el golf', 'el fútbol'],
+   pattern: {
+    groups: [ ['[Juego] [al] golf.|🧒🏽+⛳'], ['¿[Juegas] [al] tenis?|👉🎾❓'], ['Ella [juega] [al] básquetbol.|👧🏾+🏀'], ['Él [juega] [al] béisbol.|👦🏻+⚾'] ],
+    quiz: [ '¿[Juegas] al fútbol?|👉⚽❓|Do you play soccer?|Juego', 'Él [juega] al béisbol.|👦🏻+⚾|He plays baseball.|juego', '[Juego] al golf.|🧒🏽+⛳|I play golf.|Juega',
+            'Juego [al] tenis.|🧒🏽+🎾|I play tennis.|el' ],
+    card: 'juego · juegas · juega   ·   a + el = al',
+    en: 'jugar (to play): juego (I play), juegas (you play), juega (he/she plays). Spanish says "juego al fútbol" — a + el squeezes into "al".'
+   } },
+ { items: [
+    'el balón|⚽|the (soccer) ball', 'la portería|🥅|the goal (net)', '¡Gol!|⚽🥅🎉|Goal!', 'el equipo|👕👕👕|the team', 'la jugadora|👧🏽⚽|the player (girl)',
+    'el partido|🏟️⚽|the game / match', 'el entrenador|🧔🏽📋|the coach', 'La jugadora patea el balón.|👧🏽🦵⚽|The player kicks the ball.', 'Mi equipo gana.|🏆👕👕|My team wins.'
+   ],
+   fills: [ 'La jugadora patea el [balón].|👧🏽🦵⚽|The player kicks the ball.|equipo,partido', 'Mi [equipo] gana.|🏆👕👕|My team wins.|balón,portería' ] },
+ { items: [
+    'el palo de golf|svg:club:gris|the golf club', 'la pelota de golf|svg:golfball:blanco|the golf ball', 'el hoyo|⛳🕳️|the hole', 'la bandera|🚩|the flag',
+    'el campo de golf|🌳⛳🌳|the golf course', 'el lago|🏞️💧|the lake', 'La pelota está en el hoyo.|pos:in:svg:golfball:blanco@🕳️|The ball is in the hole.',
+    'Mi pelota está en el lago.|pos:in:svg:golfball:blanco@🌊|My ball is in the lake.', 'Golpeo la pelota.|🏌️‍♀️💥|I hit the ball.'
+   ],
+   review: ['Juego al golf.', 'la jugadora'],
+   fills: [ 'La pelota está en el [hoyo].|pos:in:svg:golfball:blanco@🕳️|The ball is in the hole.|lago,palo', 'Mi pelota está en el [lago].|pos:in:svg:golfball:blanco@🌊|My ball is in the lake.|hoyo,campo' ] },
+ { items: [
+    '¿Te gusta el golf?|👉⛳❓|Do you like golf?', 'Sí, me gusta mucho.|😍👍|Yes, I like it a lot.', 'No me gusta el béisbol.|😖⚾|I don\'t like baseball.',
+    '¿Cuál es tu deporte favorito?|🏅⭐❓|What\'s your favorite sport?', 'Mi deporte favorito es el golf.|⛳⭐|My favorite sport is golf.',
+    'Mi deporte favorito es el fútbol.|⚽⭐|My favorite sport is soccer.', '¡Vamos a jugar!|🏃‍♀️🏃🏻‍♀️⚽|Let\'s play!'
+   ],
+   dialogue: { scene: '🏟️', lines: [
+     'V|¿Cuál es tu deporte favorito?|What\'s your favorite sport?', 'S|Mi deporte favorito es el golf. ¿Y el tuyo?|My favorite sport is golf. And yours?',
+     'V|Me gusta mucho el fútbol. Juego los martes y los jueves.|I really like soccer. I play on Tuesdays and Thursdays.', 'S|¿Te gusta el golf?|Do you like golf?',
+     'V|No sé. ¡Nunca juego al golf!|I don\'t know. I never play golf!', 'S|¡Vamos a jugar el sábado!|Let\'s play on Saturday!', 'V|¡Sí, vamos!|Yes, let\'s go!' ],
+    replies: [
+     'V>¿Cuál es tu deporte favorito?|Mi deporte favorito es el golf.|Mi color favorito es el azul.;Hace sol.|What\'s your favorite sport?|⛳⭐',
+     'S>¿Te gusta el fútbol?|Sí, me gusta mucho.|Sí, me gustan.;Sí, es un balón.|Do you like soccer?|⚽',
+     'V>¿Juegas al tenis?|No, juego al golf.|No, juegas al golf.;Sí, hace frío.|Do you play tennis?|🎾❓' ] } }
+] });
+
+</script>
+<script>
+/* Paso a Paso — audio. Text-to-speech with the device's own Spanish voice (Web Speech API),
+   optional speech recognition, and a soft chime. Nothing is downloaded; no audio files. */
+(function () {
+'use strict';
+const W = window;
+const synth = W.speechSynthesis || null;
+const SR = W.SpeechRecognition || W.webkitSpeechRecognition || null;
+let voice = null, unlocked = false, srBroken = false, actx = null, rate = 0.85;
+const PREF = ['es-mx', 'es-us', 'es-419'];
+function pickVoice() {
+  if (!synth) return;
+  const vs = synth.getVoices() || [];
+  const es = vs.filter(v => /^es([-_]|$)/i.test(v.lang));
+  const lang = v => v.lang.replace('_', '-').toLowerCase();
+  voice = null;
+  for (const p of PREF) { const cands = es.filter(v => lang(v) === p); if (cands.length) { voice = cands.find(v => v.localService) || cands[0]; break; } }
+  if (!voice) voice = es.find(v => lang(v) !== 'es-es') || es[0] || null;
+}
+if (synth) {
+  pickVoice();
+  if (synth.addEventListener) synth.addEventListener('voiceschanged', pickVoice); else synth.onvoiceschanged = pickVoice;
+  setTimeout(pickVoice, 400); setTimeout(pickVoice, 1500);
+}
+/* iPad Safari only lets speech start inside a user tap. We "unlock" it on the very first tap with a silent utterance. */
+function unlock() {
+  if (unlocked) return; unlocked = true;
+  try { if (synth) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } } catch (e) {}
+  try { const AC = W.AudioContext || W.webkitAudioContext; if (AC && !actx) { actx = new AC(); if (actx.resume) actx.resume(); } } catch (e) {}
+}
+['touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, unlock, { capture: true, passive: true }));
+
+let queueToken = 0;
+function say(text, opts) {
+  opts = opts || {};
+  if (!synth || !text) { if (opts.onend) setTimeout(opts.onend, 10); return false; }
+  queueToken++;
+  try {
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = 'es-MX';
+    u.rate = opts.slow ? 0.55 : rate;
+    u.pitch = opts.pitch || 1;
+    if (opts.onend) { let fired = false; const f = () => { if (!fired) { fired = true; opts.onend(); } }; u.onend = f; u.onerror = f; }
+    synth.speak(u);
+    if (synth.paused) synth.resume(); // iOS sometimes starts paused
+    return true;
+  } catch (e) { return false; }
+}
+/* play several lines one after another (dialogues) */
+function sayLines(lines, onLine, onDone) {
+  const my = ++queueToken; let i = 0;
+  const next = () => {
+    if (my !== queueToken) return;
+    if (i >= lines.length) { if (onDone) onDone(); return; }
+    const l = lines[i]; if (onLine) onLine(i);
+    const cur = i++;
+    say(l.text, { pitch: l.pitch, onend: () => setTimeout(next, 350) });
+    queueToken = my; // say() bumps the token; keep ours
+    void cur;
+  };
+  next();
+}
+function stop() { queueToken++; try { synth && synth.cancel(); } catch (e) {} }
+
+function canListen() { return !!SR && !srBroken; }
+function listen(cb) {
+  if (!SR) { cb({ ok: false, error: 'unsupported' }); return () => {}; }
+  stop();
+  let done = false, r;
+  const finish = res => { if (done) return; done = true; clearTimeout(t); try { r && r.abort(); } catch (e) {} cb(res); };
+  const t = setTimeout(() => finish({ ok: false, error: 'timeout' }), 8000);
+  try {
+    r = new SR();
+    r.lang = 'es-MX'; r.interimResults = false; r.maxAlternatives = 5; r.continuous = false;
+    r.onresult = e => { const alts = []; for (let k = 0; k < e.results.length; k++) for (let i = 0; i < e.results[k].length; i++) alts.push(e.results[k][i].transcript); finish({ ok: true, alts }); };
+    r.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed' || e.error === 'network' || e.error === 'audio-capture') srBroken = true; finish({ ok: false, error: e.error || 'error' }); };
+    r.onend = () => finish({ ok: false, error: 'no-speech' });
+    r.start();
+  } catch (e) { srBroken = true; finish({ ok: false, error: 'start-failed' }); }
+  return () => finish({ ok: false, error: 'aborted' });
+}
+function chime(good) {
+  if (!actx) return;
+  try {
+    const now = actx.currentTime, notes = good ? [659.25, 987.77] : [392];
+    notes.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, now + i * 0.12); g.gain.exponentialRampToValueAtTime(good ? 0.12 : 0.05, now + i * 0.12 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.12 + 0.35);
+      o.connect(g); g.connect(actx.destination); o.start(now + i * 0.12); o.stop(now + i * 0.12 + 0.4);
+    });
+  } catch (e) {}
+}
+W.Speech = {
+  say, sayLines, stop, listen, canListen, chime, unlock,
+  hasSynth: () => !!synth, hasSR: () => !!SR, voice: () => voice, voiceLabel: () => voice ? voice.name + ' (' + voice.lang + ')' : '',
+  setRate: r => { rate = r; }, srBroken: () => srBroken, resetSR: () => { srBroken = false; }
+};
+})();
+
+</script>
+<script>
+/* Paso a Paso — app UI. Offline single-page app; all progress in localStorage. */
+(function () {
+'use strict';
+const APP_NAME = 'Paso a Paso';                 // <- rename the app here (also build.py + manifest)
+const SESSION_GOAL_SEC = 10 * 60;
+const STORE_KEY = 'pasoapaso.v1';
+const $app = document.getElementById('app');
+SL.loadContent(globalThis.SL_UNITS || [], globalThis.SL_OUTLINE || []);
+const R_ = Pics.renderPic;
+
+/* ---------------- storage ---------------- */
+function mkPlayer(id, name, color) {
+  return { id, name, color, startUnit: 1, setupDone: false, lessons: {}, cards: {}, days: {}, unlockAll: false, active: null, reviewDay: -1 };
+}
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.players) { s.settings = Object.assign(defSettings(), s.settings || {}); return s; } } catch (e) {}
+  return { v: 1, players: [mkPlayer('p1', 'Kate', '#ffb84d'), mkPlayer('p2', 'Player 2', '#7ec8e3')], current: null, settings: defSettings() };
+}
+function defSettings() { return { help: false, mic: true, rate: 0.85 }; }
+let S = load();
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) {} }
+const me = () => S.players.find(p => p.id === S.current);
+const today = () => SL.dayNum();
+function dayKey(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function day(p, k) { k = k || dayKey(); return p.days[k] || (p.days[k] = { sec: 0, items: 0, ok: 0, goalMet: false, lessons: [] }); }
+function streak(p) {
+  let n = 0; const d = new Date();
+  const ok = x => !!x && (x.goalMet || x.sec >= 300); // a streak day = at least 5 of the 10 minutes
+  if (!ok(p.days[dayKey(d)])) d.setDate(d.getDate() - 1);
+  while (ok(p.days[dayKey(d)])) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function hl(marked) { return esc(marked).replace(/\[(.+?)\]/g, '<b class="hl">$1</b>'); }
+function en(t) { return S.settings.help && t ? '<div class="en">' + esc(t) + '</div>' : ''; }
+
+/* ---------------- tiny UI helpers ---------------- */
+const ACT = {};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+  const fn = ACT[el.dataset.act]; if (fn) { e.preventDefault(); fn(el.dataset.arg, el); }
+});
+function modal(html) { closeModal(); const d = document.createElement('div'); d.className = 'modal-bg'; d.id = 'modal'; d.innerHTML = '<div class="modal">' + html + '</div>'; document.body.appendChild(d); }
+function closeModal() { const m = document.getElementById('modal'); if (m) m.remove(); }
+ACT.closeModal = closeModal;
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 1800); }
+let ticking = false;
+function render(html, playing) { closeModal(); ticking = !!playing; $app.innerHTML = html; window.scrollTo(0, 0); }
+function timerHTML() {
+  const d = day(me()), left = SESSION_GOAL_SEC - d.sec;
+  const txt = left > 0 ? '⏱ ' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0') : '🌟 +' + Math.floor(-left / 60) + ':' + String(-left % 60).padStart(2, '0');
+  return '<span class="chip" id="timer">' + txt + '</span>';
+}
+function topbar(title, back, withTimer) {
+  const p = me();
+  return '<div class="topbar">' + (back ? '<button class="btn secondary small" data-act="' + back + '" aria-label="back">◀</button>' : '') +
+    '<div class="title">' + title + '</div>' + (S.settings.help && withTimer ? '<span class="chip en-chip">EN</span>' : '') + (withTimer && p ? timerHTML() : '') +
+    (p ? '<span class="chip">🔥 ' + streak(p) + '</span>' : '') + '</div>';
+}
+
+/* ---------------- session timer (soft) ---------------- */
+let goalPending = false;
+setInterval(() => {
+  if (!ticking || document.hidden || !S.current) return;
+  const p = me(), d = day(p); d.sec++;
+  if (d.sec >= SESSION_GOAL_SEC && !d.goalMet) { d.goalMet = true; goalPending = true; save(); const b = document.getElementById('timer'); if (b) toast('⏰ ¡10 minutos! Termina esta parte.'); }
+  if (d.sec % 5 === 0) save();
+  const el = document.getElementById('timer'); if (el) el.outerHTML = timerHTML();
+}, 1000);
+
+/* ---------------- HOME ---------------- */
+function lessonLabel(L) { return 'Unidad ' + L.unit + ' · Lección ' + (L.idx + 1); }
+function goHome() {
+  S.current = null; save(); Speech.stop();
+  render(topbar(APP_NAME + ' <span class="sub">Spanish Lab</span>') + '<div class="screen"><h1>¿Quién juega hoy?</h1><div class="grid2">' +
+    S.players.map(p => { const d = p.days[dayKey()] || { sec: 0 }, L = SL.currentLesson(p);
+      return '<div class="card player-card" data-act="pickPlayer" data-arg="' + p.id + '" style="border-color:' + p.color + '">' +
+        '<div class="avatar" style="background:' + p.color + '">' + esc(p.name.charAt(0).toUpperCase()) + '</div>' +
+        '<div class="name">' + esc(p.name) + '</div><div class="muted">' + (p.setupDone ? esc(lessonLabel(L)) : 'New player') + '</div>' +
+        '<div class="muted">🔥 ' + streak(p) + ' · today ' + Math.floor(d.sec / 60) + ' min</div>' +
+        '<button class="edit" data-act="rename" data-arg="' + p.id + '">✏️ Name</button></div>'; }).join('') +
+    '</div><div class="row"><button class="btn secondary" data-act="parent">👪 Grown-ups</button><span class="spacer"></span><button class="btn secondary" data-act="about">ℹ️ About</button></div>' +
+    '<div class="welcome"><div class="welcome-pics">' + ['svg:cat:verde', 'svg:house:rojo', 'svg:flower:amarillo', 'svg:ball:azul'].map(x => R_(x, 'tile sm')).join('') + '</div>' +
+    '<div class="welcome-steps">👣 👣 👣</div><div class="welcome-text">Un paso cada día · 10 minutos</div></div></div>');
+}
+ACT.home = goHome;
+ACT.pickPlayer = id => { S.current = id; save(); const p = me(); if (!p.setupDone) goSetup(); else goHub(); };
+ACT.rename = id => {
+  const p = S.players.find(x => x.id === id);
+  modal('<h2>Change name</h2><input id="nameIn" maxlength="16" value="' + esc(p.name) + '"><button class="btn" data-act="saveName" data-arg="' + id + '">Save</button><button class="btn ghost" data-act="closeModal">Cancel</button>');
+  setTimeout(() => { const i = document.getElementById('nameIn'); if (i) i.focus(); }, 50);
+};
+ACT.saveName = id => { const v = (document.getElementById('nameIn').value || '').trim(); if (v) { S.players.find(x => x.id === id).name = v; save(); } closeModal(); if (document.querySelector('.parent-view')) goParent(); else goHome(); };
+
+/* ---------------- FIRST-TIME SETUP + PLACEMENT ---------------- */
+let setupUnit = 3;
+function goSetup() {
+  const p = me(); const maxU = Math.max(...SL.lessons.map(L => L.unit));
+  setupUnit = Math.min(Math.max(2, setupUnit), Math.min(maxU, 12));
+  render(topbar('¡Hola, ' + esc(p.name) + '!', 'home') + '<div class="screen"><h1>Where should we start?</h1>' +
+    '<div class="card big-choice" data-act="startAt" data-arg="1"><span class="emoji">🌱</span><div><div class="big">Start at Unit 1</div><div class="muted">Brand new to Spanish: first words and greetings.</div></div></div>' +
+    '<div class="card big-choice"><span class="emoji">🎯</span><div style="flex:1"><div class="big">I already know some Spanish</div>' +
+    '<div class="muted">Take a short check (10 quick questions) on the units before Unit <b id="su">' + setupUnit + '</b>. Pass it and you start there.</div>' +
+    '<div class="row" style="margin-top:10px"><button class="btn secondary small" data-act="su" data-arg="-1">−</button><span class="chip">Unit ' + setupUnit + ': ' + esc(SL.unitByN[setupUnit].title) + '</span><button class="btn secondary small" data-act="su" data-arg="1">+</button>' +
+    '<span class="spacer"></span><button class="btn" data-act="placement">Start the check ▶</button></div></div></div>' +
+    '<p class="muted small-note">Grown-ups can also skip ahead without a check in 👪 Grown-ups.</p></div>');
+}
+ACT.su = d => { setupUnit += +d; goSetup(); };
+ACT.startAt = u => { setStart(me(), +u); goHub(); };
+function setStart(p, u) {
+  p.startUnit = u; p.setupDone = true; p.active = null;
+  if (u > 1) SL.seedPlaced(p, u, today());
+  save();
+}
+ACT.placement = () => {
+  const ex = SL.buildPlacement(setupUnit);
+  startRun({ kind: 'placement', title: '🎯 Prueba', sets: [{ key: 'placement', name: 'Prueba', icon: '🎯', ex }], target: setupUnit });
+};
+function placementDone() {
+  const sc = SL.scoreResults(R.results), u = R.target, p = me();
+  const pass = sc.pct >= 0.8;
+  render(topbar('🎯 Prueba', 'home') + '<div class="screen center"><div class="celebrate-emoji">' + (pass ? '🎉' : '🌱') + '</div>' +
+    '<h1>' + sc.firstOk + ' / ' + sc.graded + '</h1>' +
+    (pass ? '<p>Great! You know the basics. You can start at <b>Unit ' + u + '</b>. Earlier words will still pop up in review.</p><div class="actions"><button class="btn" data-act="startAt" data-arg="' + u + '">Start at Unit ' + u + ' ▶</button></div>'
+      : '<p>Good try! Starting a little earlier will make the next units easy.</p><div class="actions"><button class="btn" data-act="startAt" data-arg="1">Start at Unit 1</button>' +
+        (u > 2 ? '<button class="btn secondary" data-act="startAt" data-arg="' + (u - 1) + '">Start at Unit ' + (u - 1) + '</button>' : '') +
+        '<button class="btn ghost" data-act="startAt" data-arg="' + u + '">Unit ' + u + ' anyway</button></div>') + '</div>', false);
+  void p;
+}
+
+/* ---------------- HUB / PATH MAP ---------------- */
+let openUnit = null;
+function goHub() {
+  const p = me(); if (!p) return goHome();
+  Speech.stop();
+  const d = day(p), cur = SL.currentLesson(p);
+  if (openUnit === null) openUnit = cur.unit;
+  const due = SL.dueKeys(p.cards, today()).length;
+  const units = SL.units.map(u => {
+    if (!u.built) return '<div class="unit soon"><div class="unit-head"><span class="uicon">' + u.icon + '</span><div><div class="utitle">Unidad ' + u.n + ' · ' + esc(u.title) + '</div><div class="muted">Próximamente · coming soon</div></div></div></div>';
+    const unl = u.lessons.some(L => SL.isUnlocked(p, L)), done = u.lessons.every(L => SL.lessonDone(p, L));
+    const stars = u.lessons.reduce((a, L) => a + ((p.lessons[L.id] || {}).stars || 0), 0);
+    const placed = u.n < p.startUnit && !done;
+    const isOpen = openUnit === u.n;
+    const lessons = isOpen ? '<div class="lessons">' + u.lessons.map(L => {
+      const st = p.lessons[L.id] || {}, un = SL.isUnlocked(p, L), isCur = L.id === cur.id;
+      return '<button class="lesson-dot' + (st.done ? ' done' : '') + (isCur ? ' current' : '') + (un ? '' : ' locked') + '" ' + (un ? 'data-act="openLesson" data-arg="' + L.id + '"' : 'disabled') + '>' +
+        '<span class="ld-icon">' + (un ? L.icon : '🔒') + '</span><span class="ld-title">' + (L.idx + 1) + '. ' + esc(L.title) + '</span>' +
+        '<span class="ld-stars">' + (st.done ? '★'.repeat(st.stars || 1) + '☆'.repeat(3 - (st.stars || 1)) : isCur ? '▶' : '') + '</span>' + en(L.goal) + '</button>'; }).join('') + '</div>' : '';
+    return '<div class="unit' + (unl ? '' : ' locked') + (isOpen ? ' open' : '') + (done ? ' done' : '') + '">' +
+      '<button class="unit-head" data-act="toggleUnit" data-arg="' + u.n + '"><span class="uicon">' + (unl ? u.icon : '🔒') + '</span><div style="flex:1;text-align:left"><div class="utitle">Unidad ' + u.n + ' · ' + esc(u.title) + '</div>' +
+      '<div class="muted">' + (done ? '🏆 ' : placed ? '⏭️ ' : '') + u.lessons.filter(L => SL.lessonDone(p, L)).length + ' / ' + u.lessons.length + ' · ⭐ ' + stars + (placed ? ' · skipped by check' : '') + '</div></div><span class="chev">' + (isOpen ? '▾' : '▸') + '</span></button>' + lessons + '</div>';
+  }).join('');
+  render(topbar('¡Hola, ' + esc(p.name) + '!', 'home', true) +
+    '<div class="screen"><div class="card today"><div class="row"><div style="flex:1;min-width:240px"><div class="big">Hoy: ' + Math.floor(d.sec / 60) + ' de 10 minutos</div>' +
+    '<div class="progress"><div style="width:' + Math.min(100, d.sec / SESSION_GOAL_SEC * 100) + '%"></div></div>' +
+    '<div class="muted" style="margin-top:6px">' + (due ? '🔁 ' + due + ' palabra' + (due === 1 ? '' : 's') + ' para repasar · ' : '') + esc(lessonLabel(cur)) + ': ' + esc(cur.title) + '</div></div>' +
+    '<button class="btn go" data-act="session">▶ ¡Vamos!</button></div></div>' +
+    '<h2>Mi camino</h2><div class="path">' + units + '</div></div>', false);
+}
+ACT.hub = goHub;
+ACT.toggleUnit = n => { openUnit = openUnit === +n ? -1 : +n; goHub(); };
+
+/* ---------------- RUNS (review / lesson / placement) ---------------- */
+let R = null, E = null;
+ACT.session = () => {
+  const p = me(), cur = SL.currentLesson(p);
+  if (p.reviewDay !== today()) {
+    const rv = SL.buildReview(p.cards, today(), SL.rng(Date.now()), 6);
+    if (rv) { p.reviewDay = today(); save(); return startRun({ kind: 'review', title: '🔁 Repaso', sets: [rv], then: () => openLesson(cur) }); }
+  }
+  openLesson(cur);
+};
+ACT.openLesson = id => openLesson(SL.lessonById[id]);
+function openLesson(L) {
+  const p = me();
+  let seed = Date.now() % 1e9, si = 0, results = [];
+  if (p.active && p.active.lid === L.id) { seed = p.active.seed; si = p.active.si; results = p.active.results || []; }
+  const built = SL.buildLesson(L, SL.rng(seed));
+  if (si >= built.sets.length) si = 0;
+  p.active = { lid: L.id, seed, si, results }; save();
+  startRun({ kind: 'lesson', L, title: L.icon + ' ' + esc(L.title), sets: built.sets, si, results });
+}
+function startRun(o) {
+  R = Object.assign({ si: 0, results: [], retried: new Set(), srsDone: new Set() }, o);
+  if (R.si > 0) return setBreak(true);
+  startSet();
+}
+function startSet() { R.queue = R.sets[R.si].ex.slice(); R.qi = 0; showEx(); }
+function showEx() {
+  const ex = R.queue[R.qi];
+  E = { ex, tries: 0, done: false, typed: [], placed: [], used: [], heard: '', listening: false };
+  renderEx();
+  autoSpeak();
+}
+function autoSpeak() {
+  const ex = E.ex;
+  if (['intro', 'listen', 'speak', 'spell', 'build', 'reply'].indexOf(ex.type) >= 0) sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null);
+}
+function sayFor(text, who, slow) { Speech.say(text, { slow, pitch: who ? who.pitch : 1 }); }
+ACT.hear = () => { const ex = E.ex; sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null); };
+ACT.hearSlow = () => { const ex = E.ex; sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null, true); };
+ACT.sayText = t => Speech.say(t);
+
+const INSTR = {
+  intro: ['👀', 'Mira y escucha.', 'Look and listen.'], listen: ['🎧', 'Escucha y toca la imagen.', 'Listen, then tap the matching picture.'],
+  read: ['📖', 'Lee y toca la imagen.', 'Read, then tap the matching picture.'], pick: ['👀', '¿Qué frase es?', 'Which words match the picture?'],
+  speak: ['🗣️', 'Escucha y repite.', 'Listen and say it out loud.'], spell: ['✏️', 'Escribe la palabra.', 'Spell the word.'],
+  build: ['🧱', 'Escribe la frase.', 'Build the sentence.'], fill: ['🧩', 'Completa la frase.', 'Complete the sentence.'],
+  patternShow: ['🧩', '¿Ves el patrón?', 'Look for the pattern. Tap to hear.'], patternCard: ['💡', '¡El patrón!', 'The pattern'],
+  dialogue: ['💬', 'Escucha la conversación.', 'Listen to the conversation.'], reply: ['💬', '¿Qué respondes?', 'Choose the best reply.']
+};
+const CHEERS = ['¡Muy bien!', '¡Excelente!', '¡Genial!', '¡Perfecto!', '¡Así se hace!', '¡Bravo!', '¡Fantástico!'];
+const SOFT = ['Casi. ¡Inténtalo otra vez!', 'Mmm… ¡otra vez!', '¡Tú puedes! Prueba otra.'];
+function audioBtns(big) { return Speech.hasSynth() ? '<div class="audio-row"><button class="btn audio' + (big ? ' big' : '') + '" data-act="hear" aria-label="listen">🔊</button><button class="btn audio slow" data-act="hearSlow" aria-label="slow">🐢</button></div>' : ''; }
+function progressHTML() {
+  const total = R.queue.length, set = R.sets[R.si];
+  return '<div class="lesson-progress"><span class="set-label">' + set.icon + ' ' + esc(set.name) + (R.sets.length > 1 ? ' <span class="muted">' + (R.si + 1) + '/' + R.sets.length + '</span>' : '') + '</span>' +
+    '<div class="progress"><div style="width:' + Math.round(R.qi / total * 100) + '%"></div></div></div>';
+}
+function renderEx(fb) {
+  const ex = E.ex, ins = INSTR[ex.type];
+  let body = '', actions = '';
+  const next = '<button class="btn next" data-act="next">Siguiente ▶</button>';
+  const it = ex.item || {};
+  switch (ex.type) {
+    case 'intro':
+      body = '<div class="hero-card">' + R_(it.pic, 'hero') + '<div class="es big-es">' + esc(it.es) + '</div>' + en(it.en) + audioBtns(true) + '</div>';
+      actions = next; break;
+    case 'listen': case 'read':
+      body = (ex.type === 'listen' ? (Speech.hasSynth() ? audioBtns(true) : '<div class="es big-es">' + esc(it.es) + '</div>') + (E.done ? '<div class="es">' + esc(it.es) + '</div>' : '')
+        : '<div class="es big-es">' + esc(it.es) + '</div>' + (E.done ? audioBtns() : '')) + en(E.done || ex.type === 'read' ? it.en : '') +
+        '<div class="tiles n' + ex.choices.length + '">' + ex.choices.map((c, i) => '<button class="tile-pic' + (E.used.indexOf(i) >= 0 ? ' soft' : '') + (E.done && i === ex.answer ? ' good' : '') + '" data-act="choose" data-arg="' + i + '"' + (E.done || E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>' + R_(c.pic, 'tile') + '</button>').join('') + '</div>';
+      actions = E.done ? next : ''; break;
+    case 'pick':
+      body = '<div class="hero-card slim">' + R_(it.pic, 'hero') + '</div>' + (E.done ? audioBtns() : '') + '<div class="opts">' + ex.choices.map((c, i) => '<button class="opt' + (E.used.indexOf(i) >= 0 ? ' soft' : '') + (E.done && i === ex.answer ? ' good' : '') + '" data-act="choose" data-arg="' + i + '"' + (E.done || E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>' + esc(c.es) + '</button>').join('') + '</div>' + en(E.done ? it.en : '');
+      actions = E.done ? next : ''; break;
+    case 'speak': {
+      const sr = S.settings.mic && Speech.canListen();
+      body = '<div class="hero-card slim">' + R_(it.pic, 'hero') + '<div class="es big-es">' + esc(it.es) + '</div>' + en(it.en) + audioBtns(true) + '</div>';
+      if (E.done) actions = next;
+      else if (sr) actions = '<button class="btn mic' + (E.listening ? ' on' : '') + '" data-act="mic">' + (E.listening ? '👂 Te escucho…' : '🎤 Toca y habla') + '</button>' + (E.tries >= 1 ? '<button class="btn secondary" data-act="saidIt">👍 ¡Lo dije!</button>' : '') + '<button class="btn ghost small" data-act="saidIt">Saltar ▶</button>';
+      else { actions = '<button class="btn" data-act="saidIt">👍 ¡Lo dije!</button>'; if (!fb) fb = '<div class="fb-info">🗣️ Dilo en voz alta. Luego toca 🔊 para comparar.' + en('Say it out loud, then tap 🔊 to hear it again and compare. Tap 👍 when done.') + '</div>'; }
+      break; }
+    case 'spell': {
+      const slots = ex.target.split('').map((c, i) => '<span class="slot' + (E.typed[i] ? ' filled' : '') + (E.bad && E.bad.indexOf(i) >= 0 ? ' warn' : '') + '">' + esc(E.typed[i] || '') + '</span>').join('');
+      body = '<div class="hero-card slim row-hero">' + R_(it.pic, 'hero sm') + audioBtns() + '</div>' + en(it.en) +
+        '<div class="spell-line">' + (ex.prefix ? '<span class="prefix">' + esc(ex.prefix) + '</span>' : '') + slots + '</div>' +
+        (E.done ? '<div class="es">' + esc(it.es) + '</div>' : '<div class="keys">' + ex.tiles.map((c, i) => '<button class="key" data-act="tile" data-arg="' + i + '"' + (E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>' + esc(c) + '</button>').join('') + '</div>' +
+          '<div class="keys accents">' + SL.ACCENT_KEYS.map(c => '<button class="key acc" data-act="acc" data-arg="' + esc(c) + '">' + esc(c) + '</button>').join('') + '<button class="key del" data-act="del">⌫</button></div>');
+      actions = E.done ? next : '<button class="btn" data-act="checkSpell"' + (E.typed.length ? '' : ' disabled') + '>Comprobar ✓</button>';
+      break; }
+    case 'build': {
+      body = '<div class="hero-card slim row-hero">' + R_(it.pic, 'hero sm') + audioBtns() + '</div>' + en(it.en) +
+        '<div class="build-line">' + (E.done ? '<span class="es">' + esc(it.es) + '</span>' : E.placed.map((ti, k) => '<button class="wtile placed" data-act="unplace" data-arg="' + k + '">' + esc(ex.tiles[ti]) + '</button>').join('') + (E.placed.length ? '' : '<span class="muted">…</span>')) + '</div>' +
+        (E.done ? '' : '<div class="wtiles">' + ex.tiles.map((t, i) => '<button class="wtile" data-act="place" data-arg="' + i + '"' + (E.placed.indexOf(i) >= 0 ? ' disabled' : '') + '>' + esc(t) + '</button>').join('') + '</div>');
+      actions = E.done ? next : '<button class="btn" data-act="checkBuild"' + (E.placed.length ? '' : ' disabled') + '>Comprobar ✓</button>';
+      break; }
+    case 'fill': {
+      const f = ex.item;
+      const blank = E.done ? '<b class="blank good">' + esc(f.answer) + '</b>' : '<b class="blank">　?　</b>';
+      body = (f.pic ? '<div class="hero-card slim">' + R_(f.pic, 'hero') + '</div>' : '') + '<div class="es big-es fill-line">' + esc(f.before) + blank + esc(f.after) + '</div>' + en(f.en) + (E.done ? audioBtns() : '') +
+        '<div class="opts row-opts">' + ex.options.map((o, i) => '<button class="opt' + (E.used.indexOf(i) >= 0 ? ' soft' : '') + (E.done && i === ex.answer ? ' good' : '') + '" data-act="chooseOpt" data-arg="' + i + '"' + (E.done || E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>' + esc(o) + '</button>').join('') + '</div>';
+      actions = E.done ? next : ''; break; }
+    case 'patternShow': {
+      const cols = ['c0', 'c1', 'c2', 'c3'];
+      body = '<div class="pattern-groups">' + ex.pattern.groups.map((g, gi) => '<div class="pgroup ' + cols[gi % 4] + '">' + g.map(x => '<button class="pex" data-act="sayText" data-arg="' + esc(x.es) + '">' + R_(x.pic, 'tile sm') + '<span class="es">' + hl(x.marked) + '</span></button>').join('') + '</div>').join('') + '</div>' + en(ex.pattern.en);
+      actions = next; break; }
+    case 'patternCard':
+      body = '<div class="pattern-card"><div class="pc-badge">💡 Patrón</div><div class="pc-text">' + esc(ex.pattern.card) + '</div>' + (S.settings.help ? '<div class="en">' + esc(ex.pattern.en) + '</div>' : '') + '</div>';
+      actions = next; break;
+    case 'dialogue': {
+      const d = ex.dialogue;
+      body = (d.scene ? '<div class="scene">' + esc(d.scene) + '</div>' : '') + '<div class="chat">' + d.lines.map((l, i) => { const c = SL.CAST[l.who] || { name: l.who, pic: '🙂' }; const right = l.who !== d.lines[0].who;
+        return '<button class="bubble-row' + (right ? ' right' : '') + '" data-act="sayLine" data-arg="' + i + '" id="ln' + i + '"><span class="who">' + c.pic + '<small>' + esc(c.name) + '</small></span><span class="bubble">' + esc(l.es) + en(l.en) + '</span></button>'; }).join('') + '</div>';
+      actions = '<button class="btn secondary" data-act="playAll">▶ Escuchar todo</button>' + next; break; }
+    case 'reply': {
+      const rp = ex.reply, c = SL.CAST[rp.who] || { name: rp.who, pic: '🙂' };
+      body = (rp.pic ? '<div class="hero-card slim">' + R_(rp.pic, 'hero sm') + '</div>' : '') + '<div class="chat"><div class="bubble-row"><span class="who">' + c.pic + '<small>' + esc(c.name) + '</small></span><span class="bubble">' + esc(rp.prompt) + en(rp.en) + '</span></div></div>' + audioBtns() +
+        '<div class="opts">' + ex.options.map((o, i) => '<button class="opt' + (E.used.indexOf(i) >= 0 ? ' soft' : '') + (E.done && i === ex.answer ? ' good' : '') + '" data-act="chooseOpt" data-arg="' + i + '"' + (E.done || E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>🧒 ' + esc(o) + '</button>').join('') + '</div>';
+      actions = E.done ? next : ''; break; }
+  }
+  render(topbar(R.title, 'quitRun', true) + '<div class="screen lesson ex-' + ex.type + '">' + progressHTML() +
+    '<div class="instr"><span class="ii">' + ins[0] + '</span> ' + ins[1] + (ex.review ? ' <span class="tag">🔁 repaso</span>' : '') + (ex.retry ? ' <span class="tag">otra vez</span>' : '') + en(ins[2]) + '</div>' +
+    '<div class="stage">' + body + '</div><div class="fb" id="fb">' + (fb || '') + '</div><div class="actions">' + actions + '</div></div>', true);
+}
+function setFb(html) { const f = document.getElementById('fb'); if (f) f.innerHTML = html; }
+function cheer() { return '<div class="fb-good">🌟 ' + pick(CHEERS) + '</div>'; }
+
+/* answer handling */
+function correct(extra) {
+  E.done = true; Speech.chime(true);
+  finishGraded(E.tries === 0);
+  renderEx(cheer() + (extra || ''));
+}
+function wrong(i, msg) {
+  E.tries++; if (i !== undefined && E.used.indexOf(i) < 0) E.used.push(i);
+  Speech.chime(false);
+  if (E.tries === 1 && E.ex.graded) queueRetry();
+  renderEx('<div class="fb-soft">💜 ' + (msg || pick(SOFT)) + '</div>');
+}
+function queueRetry() {
+  const key = (E.ex.item && E.ex.item.es) + '|' + E.ex.type;
+  if (R.kind === 'placement' || R.retried.has(key)) return;
+  const r = SL.retryOf(E.ex, SL.rng(Date.now())); if (!r) return;
+  R.retried.add(key); R.queue.push(r);
+}
+function finishGraded(firstTry) {
+  const ex = E.ex, p = me(), d = day(p);
+  if (!ex.graded) return;
+  if (!ex.retry) {
+    R.results.push({ graded: true, firstTry, type: ex.type, es: ex.item && ex.item.es });
+    d.items++; if (firstTry) d.ok++;
+  }
+  const es = ex.item && ex.item.es;
+  if (R.kind !== 'placement' && es && SL.itemsByEs[es] && !R.srsDone.has(es) && !ex.retry) { R.srsDone.add(es); p.cards[es] = SL.srsUpdate(p.cards[es], firstTry, today()); }
+  if (R.kind === 'lesson' && p.active) p.active.results = R.results;
+  save();
+}
+ACT.choose = (i, el) => {
+  if (E.done) return; i = +i;
+  if (i === E.ex.answer) { if (E.ex.type === 'read' || E.ex.type === 'pick') Speech.say(E.ex.item.say); return correct(); }
+  if (E.ex.type === 'listen') { wrong(i, 'Escucha otra vez. 🎧'); Speech.say(E.ex.item.say); } else wrong(i);
+  if (E.tries >= 3) { E.done = true; renderEx('<div class="fb-info">👉 ' + esc(E.ex.item.es) + '</div>'); }
+};
+ACT.chooseOpt = i => {
+  if (E.done) return; i = +i; const ex = E.ex;
+  if (ex.type === 'reply') Speech.say(ex.options[i]);
+  if (i === ex.answer) { if (ex.type === 'fill') Speech.say(ex.say); return correct(); }
+  wrong(i);
+  if (E.tries >= 2 && ex.options.length - E.used.length <= 1) { E.done = true; renderEx('<div class="fb-info">👉 ' + esc(ex.type === 'fill' ? ex.item.es : ex.reply.answer) + '</div>'); }
+};
+/* speaking */
+ACT.mic = () => {
+  if (E.listening) return;
+  E.listening = true; renderEx('<div class="fb-info">👂 …</div>');
+  Speech.listen(res => {
+    E.listening = false;
+    if (!res.ok) {
+      if (Speech.srBroken()) return renderEx('<div class="fb-info">🎤 El micrófono no está disponible. Dilo en voz alta y toca 👍.' + en('Speech recognition is not available here. Say it out loud, then tap 👍.') + '</div>');
+      E.tries++; return renderEx('<div class="fb-soft">💜 No te oí bien. ¡Otra vez!</div>');
+    }
+    const m = SL.speechMatch(res.alts, E.ex.item.es);
+    if (m.pass) { E.done = true; Speech.chime(true); R.results.push({ graded: false, type: 'speak', spoke: true }); renderEx('<div class="fb-good">🌟 ' + pick(CHEERS) + ' <span class="heard">“' + esc(m.heard) + '”</span></div>'); }
+    else { E.tries++; renderEx('<div class="fb-soft">💜 Casi. Oí: <span class="heard">“' + esc(res.alts[0] || '') + '”</span>. Escucha 🔊 y prueba otra vez.</div>'); }
+  });
+};
+ACT.saidIt = () => { if (E.done) return; E.done = true; R.results.push({ graded: false, type: 'speak' }); renderEx(cheer()); };
+/* spelling */
+ACT.tile = i => { i = +i; if (E.done || E.used.indexOf(i) >= 0 || E.typed.length >= E.ex.target.length) return; E.used.push(i); E.typed.push(E.ex.tiles[i]); E.typedSrc = (E.typedSrc || []).concat([i]); E.bad = null; renderEx(); };
+ACT.acc = c => { if (E.done || E.typed.length >= E.ex.target.length) return; E.typed.push(c); E.typedSrc = (E.typedSrc || []).concat([-1]); E.bad = null; renderEx(); };
+ACT.del = () => { if (E.done || !E.typed.length) return; E.typed.pop(); const src = (E.typedSrc || []).pop(); if (src >= 0) E.used.splice(E.used.indexOf(src), 1); E.bad = null; renderEx(); };
+ACT.checkSpell = () => {
+  const ex = E.ex, typed = E.typed.join('');
+  if (typed === ex.target) return correct('<div class="es">' + esc(ex.item.es) + '</div>');
+  E.bad = ex.target.split('').map((c, i) => (E.typed[i] !== c ? i : -1)).filter(i => i >= 0);
+  const accentOnly = SL.norm(typed) === SL.norm(ex.target) && typed.length === ex.target.length;
+  E.tries++; Speech.chime(false);
+  if (E.tries === 1) queueRetry();
+  if (E.tries >= 3) { E.done = true; E.typed = ex.target.split(''); E.bad = null; Speech.say(ex.say); return renderEx('<div class="fb-info">👉 ' + esc(ex.item.es) + '</div>'); }
+  renderEx('<div class="fb-soft">💜 ' + (accentOnly ? '¡Casi! Mira los acentos. ✍️' : 'Casi. Las letras naranjas no están bien. Toca ⌫ y prueba otra vez.') + '</div>');
+};
+/* sentence builder */
+ACT.place = i => { i = +i; if (E.done || E.placed.indexOf(i) >= 0) return; E.placed.push(i); renderEx(); };
+ACT.unplace = k => { if (E.done) return; E.placed.splice(+k, 1); renderEx(); };
+ACT.checkBuild = () => {
+  const ex = E.ex, toks = E.placed.map(i => ex.tiles[i]);
+  if (SL.checkBuild(ex, toks)) { Speech.say(ex.say); return correct(); }
+  E.tries++; Speech.chime(false);
+  if (E.tries === 1) queueRetry();
+  if (E.tries >= 3) { E.done = true; Speech.say(ex.say); return renderEx('<div class="fb-info">👉 ' + esc(ex.item.es) + '</div>'); }
+  const good = toks.findIndex((t, k) => t !== ex.tokens[k]);
+  renderEx('<div class="fb-soft">💜 Casi. ' + (good > 0 ? 'Las primeras ' + good + ' palabras están bien. ' : '') + 'Escucha 🔊 y prueba otra vez.</div>');
+};
+/* dialogue */
+ACT.sayLine = i => { const l = E.ex.dialogue.lines[+i]; markLine(+i); Speech.say(l.es, { pitch: (SL.CAST[l.who] || {}).pitch || 1 }); };
+ACT.playAll = () => { const d = E.ex.dialogue; Speech.sayLines(d.lines.map(l => ({ text: l.es, pitch: (SL.CAST[l.who] || {}).pitch || 1 })), markLine, () => markLine(-1)); };
+function markLine(i) { document.querySelectorAll('.bubble-row').forEach((b, k) => b.classList.toggle('speaking', k === i)); }
+
+ACT.next = () => {
+  if (E && !E.done && E.ex.graded) return;
+  if (E && ['intro', 'patternShow', 'patternCard', 'dialogue'].indexOf(E.ex.type) >= 0) R.results.push({ graded: false, type: E.ex.type });
+  R.qi++;
+  if (R.qi >= R.queue.length) return endSet();
+  showEx();
+};
+ACT.quitRun = () => {
+  modal('<h2>¿Salir?</h2><p>Your progress is saved at the end of each part.</p><button class="btn" data-act="closeModal">Seguir aquí</button><button class="btn ghost" data-act="reallyQuit">Salir al mapa</button>');
+};
+ACT.reallyQuit = () => { Speech.stop(); R = null; goHub(); };
+function endSet() {
+  R.si++;
+  const p = me();
+  if (R.kind === 'lesson') { p.active = { lid: R.L.id, seed: p.active ? p.active.seed : 0, si: R.si, results: R.results }; save(); }
+  if (R.si >= R.sets.length) return endRun();
+  setBreak();
+}
+function setBreak(resuming) {
+  const nxt = R.sets[R.si], sc = SL.scoreResults(R.results);
+  const html = topbar(R.title, 'quitRun', true) + '<div class="screen center"><div class="celebrate-emoji">' + (resuming ? '👋' : '✅') + '</div>' +
+    '<h1>' + (resuming ? '¡Hola otra vez!' : '¡Parte completa!') + '</h1>' + (sc.graded ? '<p class="muted">⭐ ' + sc.firstOk + ' / ' + sc.graded + ' a la primera</p>' : '') +
+    '<div class="setlist">' + R.sets.map((s, i) => '<span class="setpill' + (i < R.si ? ' done' : i === R.si ? ' now' : '') + '">' + s.icon + ' ' + esc(s.name) + '</span>').join('') + '</div>' +
+    '<div class="actions"><button class="btn" data-act="startSet">' + nxt.icon + ' ' + esc(nxt.name) + ' ▶</button></div></div>';
+  render(html, true);
+  if (goalPending) gentleStop();
+}
+ACT.startSet = () => startSet();
+function gentleStop() {
+  goalPending = false;
+  const p = me();
+  modal('<div class="celebrate-emoji">🌟</div><h2>¡10 minutos! ¡Buen trabajo!</h2><p>Racha: <b>' + streak(p) + ' día' + (streak(p) === 1 ? '' : 's') + '</b> 🔥<br><span class="muted">Your spot is saved. See you tomorrow!</span></p>' +
+    '<button class="btn" data-act="doneForToday">Terminar por hoy 🌙</button><button class="btn ghost" data-act="closeModal">Un poquito más</button>');
+}
+ACT.doneForToday = () => { closeModal(); Speech.stop(); R = null; goHub(); };
+function endRun() {
+  const p = me(), d = day(p);
+  if (R.kind === 'placement') return placementDone();
+  if (R.kind === 'review') {
+    const then = R.then, sc = SL.scoreResults(R.results);
+    render(topbar('🔁 Repaso', 'hub', true) + '<div class="screen center"><div class="celebrate-emoji">🔁</div><h1>¡Repaso listo!</h1><p class="muted">⭐ ' + sc.firstOk + ' / ' + sc.graded + '</p><div class="actions"><button class="btn" data-act="afterReview">Lección ▶</button></div></div>', true);
+    ACT.afterReview = () => then ? then() : goHub();
+    if (goalPending) gentleStop();
+    return;
+  }
+  const L = R.L, sc = SL.scoreResults(R.results), prev = p.lessons[L.id] || {};
+  const wasDone = !!prev.done;
+  p.lessons[L.id] = { done: wasDone || sc.pass, stars: Math.max(prev.stars || 0, sc.stars), best: Math.max(prev.best || 0, Math.round(sc.pct * 100)), attempts: (prev.attempts || 0) + 1, last: today() };
+  p.active = null;
+  if (d.lessons.indexOf(L.id) < 0) d.lessons.push(L.id);
+  save();
+  const nextL = SL.lessons[L.flat + 1];
+  const unitDone = sc.pass && SL.unitByN[L.unit].lessons.every(x => SL.lessonDone(p, x)) && !wasDone;
+  let msg;
+  if (sc.pass) msg = unitDone ? '🏆 ¡Unidad ' + L.unit + ' completa!' + (nextL ? ' 🔓 Unidad ' + nextL.unit + ': ' + esc(SL.unitByN[nextL.unit].title) : '') : (nextL && !wasDone ? '🔓 ¡Nueva lección! ' + esc(nextL.title) : '¡Qué bien!');
+  else msg = 'To open the next lesson, play this one again and get 4 out of 5 right on the first try. ¡Tú puedes!';
+  const stars = sc.pass ? sc.stars : 0;
+  const conf = sc.pass ? '<div class="confetti">' + Array.from({ length: 28 }, (_, i) => '<span style="left:' + ((i * 37) % 100) + '%;animation-delay:' + ((i % 7) * 0.18).toFixed(2) + 's;font-size:' + (22 + (i % 4) * 8) + 'px">' + ['🎉', '⭐', '🌟', '✨', '🎊', '💫'][i % 6] + '</span>').join('') + '</div>' : '';
+  const timeLeft = SESSION_GOAL_SEC - d.sec;
+  render(topbar(L.icon + ' ' + esc(L.title), 'hub', false) + conf + '<div class="screen center celebrate"><div class="celebrate-emoji">' + (sc.pass ? (unitDone ? '🏆' : '🎉') : '🌱') + '</div>' +
+    '<h1>' + (sc.pass ? '¡Lección completa!' : '¡Buen trabajo!') + '</h1>' +
+    '<div class="stars">' + [0, 1, 2].map(i => '<span class="' + (i < stars ? 'on' : '') + '" style="animation-delay:' + (0.3 + i * 0.25) + 's">★</span>').join('') + '</div>' +
+    '<p>' + sc.firstOk + ' / ' + sc.graded + ' a la primera (' + Math.round(sc.pct * 100) + '%)</p><p class="unlock">' + msg + '</p>' +
+    (S.settings.help ? '<p class="en">Can-do: ' + esc(L.goal) + '</p>' : '') +
+    '<div class="actions">' + (sc.pass ? (timeLeft > 60 && nextL ? '<button class="btn" data-act="openLesson" data-arg="' + nextL.id + '">Siguiente lección ▶</button>' : '<button class="btn" data-act="hub">Terminar por hoy 🌙</button>')
+      : '<button class="btn" data-act="openLesson" data-arg="' + L.id + '">Otra vez 🔁</button>') + '<button class="btn secondary" data-act="hub">🗺️ Mapa</button></div></div>', false);
+  if (sc.pass) Speech.say(pick(['¡Muy bien!', '¡Excelente trabajo!', '¡Felicidades!']));
+}
+
+/* ---------------- PARENT VIEW ---------------- */
+function goParent() {
+  Speech.stop();
+  const days = []; for (let i = 13; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push(d); }
+  const maxU = Math.max(...SL.lessons.map(L => L.unit));
+  const html = S.players.map(p => {
+    const maxSec = Math.max(SESSION_GOAL_SEC, ...days.map(d => (p.days[dayKey(d)] || {}).sec || 0));
+    const bars = '<div class="bars">' + days.map(d => { const r = p.days[dayKey(d)] || {}; const m = Math.round((r.sec || 0) / 60);
+      return '<div class="bar-wrap"><span class="bar-num">' + (m || '') + '</span><div class="' + (r.goalMet ? 'goal' : '') + '" style="height:' + Math.round((r.sec || 0) / maxSec * 100) + '%"></div></div>'; }).join('') + '</div>' +
+      '<div class="bars-labels">' + days.map(d => '<span>' + (d.getMonth() + 1) + '/' + d.getDate() + '</span>').join('') + '</div>';
+    const cur = SL.currentLesson(p), ws = SL.wordStats(p.cards), tw = SL.troubleWords(p.cards, 10);
+    const doneN = SL.lessons.filter(L => SL.lessonDone(p, L)).length;
+    const recent = Object.keys(p.lessons).filter(k => p.lessons[k].last !== undefined).sort((a, b) => p.lessons[b].last - p.lessons[a].last).slice(0, 5);
+    return '<div class="card pcard"><div class="row"><h2 style="flex:1">' + esc(p.name) + '</h2><span class="chip">🔥 ' + streak(p) + '-day streak</span><button class="edit" data-act="rename" data-arg="' + p.id + '">✏️ Rename</button></div>' +
+      '<div class="stats"><div><b>' + esc(lessonLabel(cur)) + '</b><br><span class="muted">' + esc(cur.title) + ' — ' + esc(cur.goal) + '</span></div>' +
+      '<div><b>' + doneN + '</b> lessons done<br><span class="muted">of ' + SL.lessons.length + ' built</span></div><div><b>' + ws.seen + '</b> words &amp; phrases met<br><span class="muted">' + ws.strong + ' well learned</span></div>' +
+      '<div><b>' + SL.dueKeys(p.cards, today()).length + '</b> due for review<br><span class="muted">spaced review</span></div></div>' +
+      '<b>Minutes per day (last 14 days; green = 10-minute goal met)</b>' + bars +
+      '<b style="margin-top:12px;display:block">Trouble words</b>' + (tw.length ? '<div class="trouble">' + tw.map(k => '<span>' + esc(k) + ' <i>' + esc(SL.itemsByEs[k].en) + '</i> <small>✗' + p.cards[k].miss + '</small></span>').join('') + '</div>' : '<div class="muted">None yet 🎉</div>') +
+      (recent.length ? '<b style="margin-top:12px;display:block">Recent lessons</b><div class="muted">' + recent.map(k => { const L = SL.lessonById[k]; return L ? esc(lessonLabel(L)) + ' ' + '★'.repeat(p.lessons[k].stars || 0) + ' (' + p.lessons[k].best + '%)' : ''; }).join(' · ') + '</div>' : '') +
+      '<div class="row" style="margin-top:14px"><span>Start unit:</span><button class="btn secondary small" data-act="setStartU" data-arg="' + p.id + ':-1">−</button><span class="chip">Unit ' + p.startUnit + '</span><button class="btn secondary small" data-act="setStartU" data-arg="' + p.id + ':1">+</button>' +
+      '<button class="btn secondary small" data-act="toggle" data-arg="' + p.id + ':unlockAll">' + (p.unlockAll ? '✅' : '⬜') + ' Unlock all units</button>' +
+      '<button class="btn ghost small" data-act="resetP" data-arg="' + p.id + '">Reset</button></div></div>';
+  }).join('');
+  const v = Speech.voice();
+  const voiceInfo = !Speech.hasSynth() ? '⚠️ This browser has no text-to-speech. Listening items will show the words instead.'
+    : v ? '🔊 Spanish voice: <b>' + esc(Speech.voiceLabel()) + '</b>' + (/es[-_]es/i.test(v.lang) ? ' — this is a Spain voice. For Latin American Spanish, add "Spanish (Mexico)" voice (see About).' : '')
+    : '⚠️ No Spanish voice found yet. On iPad: Settings → Accessibility → Spoken Content → Voices → Spanish → Spanish (Mexico). Then reopen the app.';
+  render('<div class="topbar"><button class="btn secondary small" data-act="' + (S.current ? 'hub' : 'home') + '">◀</button><div class="title">👪 Grown-ups</div></div><div class="screen parent-view">' +
+    '<div class="card"><div class="row"><button class="btn secondary small" data-act="setting" data-arg="help">' + (S.settings.help ? '✅' : '⬜') + ' Grown-up help (show English in lessons)</button>' +
+    '<button class="btn secondary small" data-act="setting" data-arg="mic">' + (S.settings.mic ? '✅' : '⬜') + ' Use microphone for speaking' + (Speech.hasSR() ? '' : ' (not available on this browser)') + '</button>' +
+    '<button class="btn secondary small" data-act="rate">🐇 Voice speed: ' + (S.settings.rate >= 0.95 ? 'normal' : S.settings.rate >= 0.8 ? 'a bit slower' : 'slow') + '</button>' +
+    '<button class="btn secondary small" data-act="testVoice">🔊 Test voice</button></div><p class="muted" style="font-size:17px">' + voiceInfo + '</p>' +
+    '<p class="muted" style="font-size:17px">Mastery rule: the next lesson unlocks after about 80% first-try accuracy in a lesson. Missed words come back in review after 1, 2, 4, 7, 14 and 30 days. Everything is stored only on this iPad.</p></div>' + html + '</div>', false);
+}
+ACT.parent = goParent;
+ACT.setting = k => { S.settings[k] = !S.settings[k]; if (k === 'mic') Speech.resetSR(); save(); goParent(); };
+ACT.rate = () => { const opts = [1.0, 0.85, 0.7]; const i = opts.indexOf(S.settings.rate); S.settings.rate = opts[(i + 1) % opts.length]; Speech.setRate(S.settings.rate); save(); goParent(); };
+ACT.testVoice = () => Speech.say('¡Hola! El gato es verde.');
+ACT.toggle = arg => { const [id, key] = arg.split(':'); const p = S.players.find(x => x.id === id); p[key] = !p[key]; p.setupDone = true; save(); goParent(); };
+ACT.setStartU = arg => { const [id, dlt] = arg.split(':'); const p = S.players.find(x => x.id === id); const maxU = Math.max(...SL.lessons.map(L => L.unit));
+  const u = Math.max(1, Math.min(maxU, p.startUnit + +dlt)); setStart(p, u); goParent(); };
+ACT.resetP = id => { const p = S.players.find(x => x.id === id); modal('<h2>Reset ' + esc(p.name) + '?</h2><p>This erases all progress for this player on this iPad.</p><button class="btn" data-act="resetYes" data-arg="' + id + '">Yes, reset</button><button class="btn ghost" data-act="closeModal">Cancel</button>'); };
+ACT.resetYes = id => { const i = S.players.findIndex(x => x.id === id), old = S.players[i]; S.players[i] = mkPlayer(old.id, old.name, old.color); save(); closeModal(); goParent(); };
+
+/* ---------------- ABOUT ---------------- */
+ACT.about = () => render(topbar('About', 'home') + '<div class="screen"><div class="idea"><h2>' + APP_NAME + ' · Spanish Lab</h2>' +
+  '<p>A private family app for learning Spanish, 10 minutes a day. No accounts, no ads, no tracking. Progress stays on this iPad.</p><br>' +
+  '<p><b>Which Spanish?</b> Latin American Spanish (Mexican/U.S. usage): <i>el carro, la computadora, el jugo, el plátano, el pizarrón, ¿Me prestas…?</i> The voice prefers a Mexico or U.S. Spanish voice.</p><br>' +
+  '<p><b>How it teaches:</b> pictures instead of translations, then words → phrases → sentences → short conversations. Grammar is discovered from patterns, with a one-line pattern card. Words you miss come back later (spaced review).</p><br>' +
+  '<p><b>Sound:</b> uses the iPad\'s built-in Spanish voice. If it sounds English or silent, add a Spanish voice: Settings → Accessibility → Spoken Content → Voices → Spanish → Spanish (Mexico). Make sure the ringer/volume is up.</p><br>' +
+  '<p><b>Speaking:</b> when the browser supports it, tap 🎤 and speak (this uses Apple\'s speech service and may ask for microphone permission). Otherwise just say it out loud and tap 👍. Speaking never blocks progress.</p><br>' +
+  '<p class="muted">All lessons, pictures and wording are original. This app is not affiliated with any language-learning company.</p></div></div>');
+
+/* ---------------- boot ---------------- */
+Speech.setRate(S.settings.rate);
+if (location.protocol.indexOf('http') === 0 && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+window.PAP = { S, SL, goHome, goHub, goParent, ACT, openLesson, startRun, save, get R() { return R; }, get E() { return E; }, renderEx: f => renderEx(f) }; // for testing
+S.current && me() && me().setupDone ? goHub() : goHome();
+})();
+
+</script>
+</body>
+</html>
