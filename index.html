@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Paso a Paso">
 <meta name="theme-color" content="#1d2747">
-<meta name="app-version" content="paso-v4-9755053f">
+<meta name="app-version" content="paso-v6-48d536ca">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -61,7 +61,34 @@ p{font-size:20px;line-height:1.45;margin:0}
 .spacer{flex:1}
 .progress{height:12px;background:var(--panel2);border-radius:999px;overflow:hidden}
 .progress>div{height:100%;background:var(--good);transition:width .4s}
-.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center;margin-top:6px;padding:10px 0 calc(12px + var(--safe-b));flex-shrink:0}
+.screen.lesson{overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(20px + var(--safe-b))}
+.btn.next{font-size:24px;padding:16px 28px;min-height:66px}
+.btn.next.prominent{font-size:30px;padding:20px 40px;min-height:78px;border-radius:20px}
+.btn.next.pulse-next{animation:nextGlow 1.5s ease-in-out infinite}
+@keyframes nextGlow{
+  0%,100%{box-shadow:0 4px 0 rgba(0,0,0,.25),0 0 0 0 rgba(255,184,77,.65);filter:brightness(1)}
+  50%{box-shadow:0 4px 0 rgba(0,0,0,.25),0 0 18px 6px rgba(255,184,77,.45);filter:brightness(1.08)}
+}
+.next-wrap{display:flex;align-items:center;justify-content:center;gap:12px}
+.next-cue{font-size:40px;line-height:1;filter:drop-shadow(0 2px 0 rgba(0,0,0,.2))}
+.hero-card.tappable{cursor:pointer}
+.coach-tip{background:rgba(255,184,77,.16);border:2px solid var(--accent);border-radius:16px;padding:10px 16px;font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;max-width:560px;margin:0 auto;text-align:left}
+.coach-tip .coach-x{margin-left:auto;background:var(--panel2);border-radius:999px;width:36px;height:36px;font-size:18px;font-weight:800;flex:none}
+.how-card{background:var(--panel);border-radius:24px;padding:28px 26px;max-width:640px;width:100%;margin:12px auto;display:flex;flex-direction:column;gap:14px;box-shadow:0 6px 0 rgba(0,0,0,.25)}
+.how-card h1{font-size:28px;margin:0}
+.how-card .how-lines{display:flex;flex-direction:column;gap:10px}
+.how-card .how-line{font-size:20px;font-weight:600;line-height:1.4;background:var(--panel2);border-radius:14px;padding:12px 16px}
+.how-card .how-goal{font-size:18px;color:var(--muted);font-weight:600;line-height:1.4}
+.how-card .how-goal b{color:var(--accent);font-weight:800}
+.how-card.compact{padding:18px 20px;gap:12px}
+.how-card.compact .how-line{font-size:17px;padding:8px 12px}
+.how-toggle{display:flex;align-items:center;gap:10px;font-size:17px;color:var(--muted);font-weight:600;justify-content:center;cursor:pointer}
+.how-toggle input{width:22px;height:22px;accent-color:var(--accent)}
+.ui-en{font-weight:700;opacity:.85}
+@media (prefers-reduced-motion:reduce){
+  .btn.next.pulse-next,.lesson-dot.current,.btn.mic.on,.next-cue{animation:none!important}
+}
 .toast{position:fixed;left:50%;bottom:calc(30px + var(--safe-b));transform:translateX(-50%);background:var(--accent);color:#2a1d05;font-weight:800;font-size:22px;padding:14px 24px;border-radius:999px;z-index:60;text-align:center}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
 .modal{background:var(--panel);border-radius:24px;padding:28px;max-width:560px;width:100%;display:flex;flex-direction:column;gap:14px;text-align:center}
@@ -101,7 +128,7 @@ a{color:var(--blue)}
 .instr{font-size:24px;font-weight:800;text-align:center}
 .instr .ii{font-size:28px}
 .tag{font-size:15px;background:var(--panel2);border-radius:999px;padding:4px 10px;vertical-align:middle;font-weight:700}
-.stage{display:flex;flex-direction:column;align-items:center;gap:14px;flex:1;justify-content:center}
+.stage{display:flex;flex-direction:column;align-items:center;gap:14px;justify-content:flex-start;width:100%}
 .es{font-size:26px;font-weight:800;text-align:center;line-height:1.3}
 .big-es{font-size:clamp(28px,4.6vw,44px)}
 .hero-card{background:var(--tile);color:var(--tileInk);border-radius:28px;padding:18px 26px;display:flex;flex-direction:column;align-items:center;gap:10px;min-width:min(560px,92%);box-shadow:0 6px 0 rgba(0,0,0,.25)}
@@ -670,9 +697,27 @@ function seedPlaced(p, startUnit, today, r) {
   }));
 }
 
+
+/* ---------- UI English fade (buttons/instructions by unit) ---------- */
+/* Auto: Units 1–2 buttons+instructions; 3–4 instructions only; 5+ none.
+   Always/Never override. Grown-up help is handled by the UI layer separately. */
+function uiEnFor(unit, mode) {
+  mode = mode || 'auto';
+  unit = +unit || 1;
+  if (mode === 'always') return { buttons: true, instructions: true };
+  if (mode === 'never') return { buttons: false, instructions: false };
+  return { buttons: unit <= 2, instructions: unit <= 4 };
+}
+/* How-this-lesson card: auto = full for first 3 completed lessons, then compact. */
+function howCardMode(pref, lessonsDone, hide) {
+  if (hide || pref === 'never') return 'skip';
+  if (pref === 'always') return 'full';
+  // auto (default)
+  return (lessonsDone || 0) < 3 ? 'full' : 'compact';
+}
 Object.assign(SL, { loadContent, unitPool, pickDistractors, exChoice, exSpell, exBuild, exFill, spellTarget, tokenize, joinTokens, checkBuild,
   buildLesson, retryOf, INTERVALS, dayNum, srsUpdate, dueKeys, buildReview, troubleWords, wordStats, PASS, scoreResults, lessonDone, isUnlocked,
-  currentLesson, buildPlacement, seedPlaced, adjVariants, ADJ, INVAR, picCat, chunk });
+  currentLesson, buildPlacement, seedPlaced, adjVariants, ADJ, INVAR, picCat, chunk, uiEnFor, howCardMode });
 
 if (typeof module !== 'undefined' && module.exports) module.exports = SL;
 ROOT.SL = SL;
@@ -1837,10 +1882,22 @@ const R_ = Pics.renderPic;
 
 /* ---------------- storage ---------------- */
 function mkPlayer(id, name, color) {
-  return { id, name, color, startUnit: 1, setupDone: false, lessons: {}, cards: {}, days: {}, unlockAll: false, active: null, reviewDay: -1 };
+  return { id, name, color, startUnit: 1, setupDone: false, lessons: {}, cards: {}, days: {}, unlockAll: false, active: null, reviewDay: -1, uiEn: 'auto', howWorks: 'auto', hideHow: false, seenIntroTip: false };
 }
 function load() {
-  try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.players) { s.settings = Object.assign(defSettings(), s.settings || {}); return s; } } catch (e) {}
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (s && s.players) {
+      s.settings = Object.assign(defSettings(), s.settings || {});
+      s.players.forEach(p => {
+        if (p.uiEn == null) p.uiEn = 'auto';
+        if (p.howWorks == null) p.howWorks = 'auto';
+        if (p.hideHow == null) p.hideHow = false;
+        if (p.seenIntroTip == null) p.seenIntroTip = false;
+      });
+      return s;
+    }
+  } catch (e) {}
   return { v: 1, players: [mkPlayer('p1', 'Kate', '#ffb84d'), mkPlayer('p2', 'Player 2', '#7ec8e3')], current: null, settings: defSettings() };
 }
 function defSettings() { return { help: false, mic: true, rate: 0.85 }; }
@@ -1861,6 +1918,21 @@ function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<'
 function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 function hl(marked) { return esc(marked).replace(/\[(.+?)\]/g, '<b class="hl">$1</b>'); }
 function en(t) { return S.settings.help && t ? '<div class="en">' + esc(t) + '</div>' : ''; }
+function currentUnit() {
+  if (R && R.L && R.L.unit) return R.L.unit;
+  if (R && R.kind === 'placement' && R.target) return Math.max(1, R.target - 1);
+  const p = me(); return p ? (SL.currentLesson(p).unit || 1) : 1;
+}
+function uiFlags() {
+  const p = me();
+  const mode = (p && p.uiEn) || 'auto';
+  const f = SL.uiEnFor(currentUnit(), mode);
+  // Grown-up help also reveals UI English (never overrides Never)
+  if (mode !== 'never' && S.settings.help) return { buttons: true, instructions: true };
+  return f;
+}
+function uiBtn(es, eng) { return uiFlags().buttons ? (es + ' <span class="ui-en">(' + eng + ')</span>') : es; }
+function uiInstr(es, eng) { return uiFlags().instructions ? (es + ' <span class="ui-en">(' + eng + ')</span>') : es; }
 
 /* ---------------- tiny UI helpers ---------------- */
 const ACT = {};
@@ -2000,15 +2072,75 @@ ACT.session = () => {
   openLesson(cur);
 };
 ACT.openLesson = id => openLesson(SL.lessonById[id]);
-function openLesson(L) {
+function openLesson(L, opts) {
+  opts = opts || {};
   const p = me();
   let seed = Date.now() % 1e9, si = 0, results = [];
   if (p.active && p.active.lid === L.id) { seed = p.active.seed; si = p.active.si; results = p.active.results || []; }
   const built = SL.buildLesson(L, SL.rng(seed));
   if (si >= built.sets.length) si = 0;
   p.active = { lid: L.id, seed, si, results }; save();
-  startRun({ kind: 'lesson', L, title: L.icon + ' ' + esc(L.title), sets: built.sets, si, results });
+  const run = { kind: 'lesson', L, title: L.icon + ' ' + esc(L.title), sets: built.sets, si, results };
+  if (!opts.skipHow && si === 0) {
+    const doneN = SL.lessons.filter(x => SL.lessonDone(p, x)).length;
+    const mode = SL.howCardMode(p.howWorks || 'auto', doneN, p.hideHow);
+    if (mode !== 'skip') return showHowCard(L, built, run, mode);
+  }
+  startRun(run);
 }
+function howLinesFor(built) {
+  return built.sets.map(s => {
+    const types = new Set(s.ex.map(e => e.type));
+    if (s.key === 'listen') {
+      if (types.has('intro') && types.has('listen')) return '👀 Look and listen to new words, then tap the matching picture. Tap 🔊 / 🐢 to hear again.';
+      if (types.has('intro')) return '👀 Look and listen to new words. Tap 🔊 to hear again, 🐢 for slow.';
+      return '🎧 Listen and tap the right picture.';
+    }
+    if (s.key === 'read') {
+      if (types.has('pick') && !types.has('read')) return '👀 Look at the picture and pick the right words.';
+      if (types.has('pick')) return '📖 Read or look, then pick the matching picture or words.';
+      return '📖 Read and tap the matching picture.';
+    }
+    if (s.key === 'speak') {
+      const bits = [];
+      if (types.has('speak')) bits.push('say it out loud');
+      if (types.has('spell')) bits.push('spell a word');
+      if (types.has('build')) bits.push('build a sentence from word tiles');
+      if (!bits.length) return '🗣️ Practice speaking and writing.';
+      return '🗣️ ' + bits[0].charAt(0).toUpperCase() + bits[0].slice(1) + (bits.length > 1 ? ', and ' + bits.slice(1).join(', ') : '') + '.';
+    }
+    if (s.key === 'pattern') return '🧩 Find the pattern and complete a sentence.';
+    if (s.key === 'talk') return types.has('dialogue')
+      ? '💬 Listen to a short conversation, then choose your reply.'
+      : '💬 Choose the best reply.';
+    return s.icon + ' ' + s.name + '.';
+  }).slice(0, 4);
+}
+function showHowCard(L, built, run, mode) {
+  R = Object.assign({ si: 0, results: [], retried: new Set(), srsDone: new Set() }, run);
+  const lines = howLinesFor(built);
+  const compact = mode === 'compact';
+  const body = compact
+    ? '<div class="how-card compact"><h1>' + L.icon + ' ' + esc(L.title) + '</h1>' +
+      '<div class="how-line">' + esc(lines.map(l => l.replace(/\s+/g, ' ').split('. ')[0]).join(' · ')) + '</div>' +
+      '<div class="how-goal">🎯 <b>Goal:</b> ' + esc(L.goal) + '</div>' +
+      '<div class="actions"><button class="btn go" data-act="startHow">Start ▶</button></div>' +
+      '<label class="how-toggle"><input type="checkbox" id="howHide"> Don\'t show again</label></div>'
+    : '<div class="how-card"><h1>How this lesson works</h1>' +
+      '<div class="muted" style="font-weight:700">' + L.icon + ' ' + esc(L.title) + '</div>' +
+      '<div class="how-lines">' + lines.map(l => '<div class="how-line">' + esc(l) + '</div>').join('') + '</div>' +
+      '<div class="how-goal">🎯 <b>Goal:</b> ' + esc(L.goal) + '</div>' +
+      '<div class="actions"><button class="btn go" data-act="startHow">Start ▶</button></div>' +
+      '<label class="how-toggle"><input type="checkbox" id="howHide"> Don\'t show again</label></div>';
+  render(topbar(L.icon + ' ' + esc(L.title), 'quitRun', true) + '<div class="screen center">' + body + '</div>', true);
+}
+ACT.startHow = () => {
+  const p = me();
+  const box = document.getElementById('howHide');
+  if (box && box.checked) { p.hideHow = true; p.howWorks = 'never'; save(); }
+  if (!R) return goHub();
+  startSet();
+};
 function startRun(o) {
   R = Object.assign({ si: 0, results: [], retried: new Set(), srsDone: new Set() }, o);
   if (R.si > 0) return setBreak(true);
@@ -2021,17 +2153,37 @@ function showEx() {
   renderEx();
   autoSpeak();
 }
+function pulseTypes(t) { return ['intro', 'patternShow', 'patternCard', 'dialogue'].indexOf(t) >= 0; }
+function armNextPulse() {
+  if (!E || !pulseTypes(E.ex.type)) return;
+  const btn = document.querySelector('.btn.next');
+  if (btn) btn.classList.add('pulse-next');
+}
+let pulseTimer = 0;
+function schedulePulse(afterMs) {
+  clearTimeout(pulseTimer);
+  pulseTimer = setTimeout(armNextPulse, afterMs);
+}
 function autoSpeak() {
   const ex = E.ex;
-  if (['intro', 'listen', 'speak', 'spell', 'build', 'reply'].indexOf(ex.type) >= 0) sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null);
+  const wantsPulse = pulseTypes(ex.type);
+  if (['intro', 'listen', 'speak', 'spell', 'build', 'reply'].indexOf(ex.type) >= 0) {
+    const spoke = sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null, false, wantsPulse ? armNextPulse : null);
+    if (wantsPulse && !spoke) schedulePulse(2500);
+  } else if (wantsPulse) {
+    schedulePulse(2500);
+  }
 }
-function sayFor(text, who, slow) { Speech.say(text, { slow, pitch: who ? who.pitch : 1 }); }
+function sayFor(text, who, slow, onend) {
+  return Speech.say(text, { slow, pitch: who ? who.pitch : 1, onend: onend || undefined });
+}
 ACT.hear = () => { const ex = E.ex; sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null); };
 ACT.hearSlow = () => { const ex = E.ex; sayFor(ex.type === 'reply' ? ex.reply.prompt : ex.say, ex.type === 'reply' ? SL.CAST[ex.reply.who] : null, true); };
 ACT.sayText = t => Speech.say(t);
+ACT.dismissTip = () => { const p = me(); if (p) { p.seenIntroTip = true; save(); } const tip = document.getElementById('coachTip'); if (tip) tip.remove(); };
 
 const INSTR = {
-  intro: ['👀', 'Mira y escucha.', 'Look and listen.'], listen: ['🎧', 'Escucha y toca la imagen.', 'Listen, then tap the matching picture.'],
+  intro: ['👀', 'Mira y escucha.', 'Look and listen.'], listen: ['🎧', 'Escucha y toca la imagen.', 'Listen, then tap the picture.'],
   read: ['📖', 'Lee y toca la imagen.', 'Read, then tap the matching picture.'], pick: ['👀', '¿Qué frase es?', 'Which words match the picture?'],
   speak: ['🗣️', 'Escucha y repite.', 'Listen and say it out loud.'], spell: ['✏️', 'Escribe la palabra.', 'Spell the word.'],
   build: ['🧱', 'Escribe la frase.', 'Build the sentence.'], fill: ['🧩', 'Completa la frase.', 'Complete the sentence.'],
@@ -2049,11 +2201,16 @@ function progressHTML() {
 function renderEx(fb) {
   const ex = E.ex, ins = INSTR[ex.type];
   let body = '', actions = '';
-  const next = '<button class="btn next" data-act="next">Siguiente ▶</button>';
+  const prominent = pulseTypes(ex.type);
+  const nextLabel = uiBtn('Siguiente ▶', 'Next');
+  const nextBtn = '<button class="btn next' + (prominent ? ' prominent' : '') + '" data-act="next">' + nextLabel + '</button>';
+  const next = (ex.type === 'intro')
+    ? '<div class="next-wrap"><span class="next-cue" aria-hidden="true">👉</span>' + nextBtn + '</div>'
+    : nextBtn;
   const it = ex.item || {};
   switch (ex.type) {
     case 'intro':
-      body = '<div class="hero-card">' + R_(it.pic, 'hero') + '<div class="es big-es">' + esc(it.es) + '</div>' + en(it.en) + audioBtns(true) + '</div>';
+      body = '<div class="hero-card tappable" data-act="hear">' + R_(it.pic, 'hero') + '<div class="es big-es">' + esc(it.es) + '</div>' + en(it.en) + audioBtns(true) + '</div>';
       actions = next; break;
     case 'listen': case 'read':
       body = (ex.type === 'listen' ? (Speech.hasSynth() ? audioBtns(true) : '<div class="es big-es">' + esc(it.es) + '</div>') + (E.done ? '<div class="es">' + esc(it.es) + '</div>' : '')
@@ -2067,8 +2224,8 @@ function renderEx(fb) {
       const sr = S.settings.mic && Speech.canListen();
       body = '<div class="hero-card slim">' + R_(it.pic, 'hero') + '<div class="es big-es">' + esc(it.es) + '</div>' + en(it.en) + audioBtns(true) + '</div>';
       if (E.done) actions = next;
-      else if (sr) actions = '<button class="btn mic' + (E.listening ? ' on' : '') + '" data-act="mic">' + (E.listening ? '👂 Te escucho…' : '🎤 Toca y habla') + '</button>' + (E.tries >= 1 ? '<button class="btn secondary" data-act="saidIt">👍 ¡Lo dije!</button>' : '') + '<button class="btn ghost small" data-act="saidIt">Saltar ▶</button>';
-      else { actions = '<button class="btn" data-act="saidIt">👍 ¡Lo dije!</button>'; if (!fb) fb = '<div class="fb-info">🗣️ Dilo en voz alta. Luego toca 🔊 para comparar.' + en('Say it out loud, then tap 🔊 to hear it again and compare. Tap 👍 when done.') + '</div>'; }
+      else if (sr) actions = '<button class="btn mic' + (E.listening ? ' on' : '') + '" data-act="mic">' + (E.listening ? uiBtn('👂 Te escucho…', 'Listening…') : uiBtn('🎤 Toca y habla', 'Tap and speak')) + '</button>' + (E.tries >= 1 ? '<button class="btn secondary" data-act="saidIt">' + uiBtn('👍 ¡Lo dije!', 'I said it!') + '</button>' : '') + '<button class="btn ghost small" data-act="saidIt">' + uiBtn('Saltar ▶', 'Skip') + '</button>';
+      else { actions = '<button class="btn" data-act="saidIt">' + uiBtn('👍 ¡Lo dije!', 'I said it!') + '</button>'; if (!fb) fb = '<div class="fb-info">🗣️ ' + uiInstr('Dilo en voz alta. Luego toca 🔊 para comparar.', 'Say it out loud, then tap 🔊 to hear it again and compare. Tap 👍 when done.') + '</div>'; }
       break; }
     case 'spell': {
       const slots = ex.target.split('').map((c, i) => '<span class="slot' + (E.typed[i] ? ' filled' : '') + (E.bad && E.bad.indexOf(i) >= 0 ? ' warn' : '') + '">' + esc(E.typed[i] || '') + '</span>').join('');
@@ -2076,13 +2233,13 @@ function renderEx(fb) {
         '<div class="spell-line">' + (ex.prefix ? '<span class="prefix">' + esc(ex.prefix) + '</span>' : '') + slots + '</div>' +
         (E.done ? '<div class="es">' + esc(it.es) + '</div>' : '<div class="keys">' + ex.tiles.map((c, i) => '<button class="key" data-act="tile" data-arg="' + i + '"' + (E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>' + esc(c) + '</button>').join('') + '</div>' +
           '<div class="keys accents">' + SL.ACCENT_KEYS.map(c => '<button class="key acc" data-act="acc" data-arg="' + esc(c) + '">' + esc(c) + '</button>').join('') + '<button class="key del" data-act="del">⌫</button></div>');
-      actions = E.done ? next : '<button class="btn" data-act="checkSpell"' + (E.typed.length ? '' : ' disabled') + '>Comprobar ✓</button>';
+      actions = E.done ? next : '<button class="btn" data-act="checkSpell"' + (E.typed.length ? '' : ' disabled') + '>' + uiBtn('Comprobar ✓', 'Check') + '</button>';
       break; }
     case 'build': {
       body = '<div class="hero-card slim row-hero">' + R_(it.pic, 'hero sm') + audioBtns() + '</div>' + en(it.en) +
         '<div class="build-line">' + (E.done ? '<span class="es">' + esc(it.es) + '</span>' : E.placed.map((ti, k) => '<button class="wtile placed" data-act="unplace" data-arg="' + k + '">' + esc(ex.tiles[ti]) + '</button>').join('') + (E.placed.length ? '' : '<span class="muted">…</span>')) + '</div>' +
         (E.done ? '' : '<div class="wtiles">' + ex.tiles.map((t, i) => '<button class="wtile" data-act="place" data-arg="' + i + '"' + (E.placed.indexOf(i) >= 0 ? ' disabled' : '') + '>' + esc(t) + '</button>').join('') + '</div>');
-      actions = E.done ? next : '<button class="btn" data-act="checkBuild"' + (E.placed.length ? '' : ' disabled') + '>Comprobar ✓</button>';
+      actions = E.done ? next : '<button class="btn" data-act="checkBuild"' + (E.placed.length ? '' : ' disabled') + '>' + uiBtn('Comprobar ✓', 'Check') + '</button>';
       break; }
     case 'fill': {
       const f = ex.item;
@@ -2101,16 +2258,23 @@ function renderEx(fb) {
       const d = ex.dialogue;
       body = (d.scene ? '<div class="scene">' + esc(d.scene) + '</div>' : '') + '<div class="chat">' + d.lines.map((l, i) => { const c = SL.CAST[l.who] || { name: l.who, pic: '🙂' }; const right = l.who !== d.lines[0].who;
         return '<button class="bubble-row' + (right ? ' right' : '') + '" data-act="sayLine" data-arg="' + i + '" id="ln' + i + '"><span class="who">' + c.pic + '<small>' + esc(c.name) + '</small></span><span class="bubble">' + esc(l.es) + en(l.en) + '</span></button>'; }).join('') + '</div>';
-      actions = '<button class="btn secondary" data-act="playAll">▶ Escuchar todo</button>' + next; break; }
+      actions = '<button class="btn secondary" data-act="playAll">' + uiBtn('▶ Escuchar todo', 'Listen to all') + '</button>' + next; break; }
     case 'reply': {
       const rp = ex.reply, c = SL.CAST[rp.who] || { name: rp.who, pic: '🙂' };
       body = (rp.pic ? '<div class="hero-card slim">' + R_(rp.pic, 'hero sm') + '</div>' : '') + '<div class="chat"><div class="bubble-row"><span class="who">' + c.pic + '<small>' + esc(c.name) + '</small></span><span class="bubble">' + esc(rp.prompt) + en(rp.en) + '</span></div></div>' + audioBtns() +
         '<div class="opts">' + ex.options.map((o, i) => '<button class="opt' + (E.used.indexOf(i) >= 0 ? ' soft' : '') + (E.done && i === ex.answer ? ' good' : '') + '" data-act="chooseOpt" data-arg="' + i + '"' + (E.done || E.used.indexOf(i) >= 0 ? ' disabled' : '') + '>🧒 ' + esc(o) + '</button>').join('') + '</div>';
       actions = E.done ? next : ''; break; }
   }
+  let coach = '';
+  if (ex.type === 'intro') {
+    const p = me();
+    if (p && !p.seenIntroTip) {
+      coach = '<div class="coach-tip" id="coachTip"><span>💡 Escucha 🔊 y toca Siguiente ▶' + (S.settings.help ? '<div class="en">Listen, then tap Next.</div>' : '') + '</span><button class="coach-x" data-act="dismissTip" aria-label="dismiss">✕</button></div>';
+    }
+  }
   render(topbar(R.title, 'quitRun', true) + '<div class="screen lesson ex-' + ex.type + '">' + progressHTML() +
-    '<div class="instr"><span class="ii">' + ins[0] + '</span> ' + ins[1] + (ex.review ? ' <span class="tag">🔁 repaso</span>' : '') + (ex.retry ? ' <span class="tag">otra vez</span>' : '') + en(ins[2]) + '</div>' +
-    '<div class="stage">' + body + '</div><div class="fb" id="fb">' + (fb || '') + '</div><div class="actions">' + actions + '</div></div>', true);
+    '<div class="instr"><span class="ii">' + ins[0] + '</span> ' + uiInstr(ins[1], ins[2]) + (ex.review ? ' <span class="tag">🔁 repaso</span>' : '') + (ex.retry ? ' <span class="tag">otra vez</span>' : '') + '</div>' +
+    '<div class="stage">' + body + '</div><div class="fb" id="fb">' + (fb || '') + '</div>' + coach + '<div class="actions">' + actions + '</div></div>', true);
 }
 function setFb(html) { const f = document.getElementById('fb'); if (f) f.innerHTML = html; }
 function cheer() { return '<div class="fb-good">🌟 ' + pick(CHEERS) + '</div>'; }
@@ -2296,7 +2460,9 @@ function goParent() {
       (recent.length ? '<b style="margin-top:12px;display:block">Recent lessons</b><div class="muted">' + recent.map(k => { const L = SL.lessonById[k]; return L ? esc(lessonLabel(L)) + ' ' + '★'.repeat(p.lessons[k].stars || 0) + ' (' + p.lessons[k].best + '%)' : ''; }).join(' · ') + '</div>' : '') +
       '<div class="row" style="margin-top:14px"><span>Start unit:</span><button class="btn secondary small" data-act="setStartU" data-arg="' + p.id + ':-1">−</button><span class="chip">Unit ' + p.startUnit + '</span><button class="btn secondary small" data-act="setStartU" data-arg="' + p.id + ':1">+</button>' +
       '<button class="btn secondary small" data-act="toggle" data-arg="' + p.id + ':unlockAll">' + (p.unlockAll ? '✅' : '⬜') + ' Unlock all units</button>' +
-      '<button class="btn ghost small" data-act="resetP" data-arg="' + p.id + '">Reset</button></div></div>';
+      '<button class="btn ghost small" data-act="resetP" data-arg="' + p.id + '">Reset</button></div>' +
+      '<div class="row" style="margin-top:10px"><button class="btn secondary small" data-act="cycleUiEn" data-arg="' + p.id + '">🔤 English for buttons &amp; instructions: ' + ({ auto: 'Auto (fade by unit)', always: 'Always', never: 'Never' }[p.uiEn || 'auto']) + '</button>' +
+      '<button class="btn secondary small" data-act="cycleHow" data-arg="' + p.id + '">📋 How-this-lesson card: ' + ({ auto: 'Auto (full → compact)', always: 'Always full', never: 'Off' }[p.hideHow ? 'never' : (p.howWorks || 'auto')]) + '</button></div></div>';
   }).join('');
   const v = Speech.voice();
   const voiceInfo = !Speech.hasSynth() ? '⚠️ This browser has no text-to-speech. Listening items will show the words instead.'
@@ -2314,6 +2480,15 @@ ACT.setting = k => { S.settings[k] = !S.settings[k]; if (k === 'mic') Speech.res
 ACT.rate = () => { const opts = [1.0, 0.85, 0.7]; const i = opts.indexOf(S.settings.rate); S.settings.rate = opts[(i + 1) % opts.length]; Speech.setRate(S.settings.rate); save(); goParent(); };
 ACT.testVoice = () => Speech.say('¡Hola! El gato es verde.');
 ACT.toggle = arg => { const [id, key] = arg.split(':'); const p = S.players.find(x => x.id === id); p[key] = !p[key]; p.setupDone = true; save(); goParent(); };
+ACT.cycleUiEn = id => { const p = S.players.find(x => x.id === id); const opts = ['auto', 'always', 'never']; p.uiEn = opts[(opts.indexOf(p.uiEn || 'auto') + 1) % opts.length]; save(); goParent(); };
+ACT.cycleHow = id => {
+  const p = S.players.find(x => x.id === id);
+  // cycle: auto → always → never(hide) → auto
+  if (p.hideHow || p.howWorks === 'never') { p.hideHow = false; p.howWorks = 'auto'; }
+  else if ((p.howWorks || 'auto') === 'auto') { p.howWorks = 'always'; }
+  else { p.howWorks = 'never'; p.hideHow = true; }
+  save(); goParent();
+};
 ACT.setStartU = arg => { const [id, dlt] = arg.split(':'); const p = S.players.find(x => x.id === id); const maxU = Math.max(...SL.lessons.map(L => L.unit));
   const u = Math.max(1, Math.min(maxU, p.startUnit + +dlt)); setStart(p, u); goParent(); };
 ACT.resetP = id => { const p = S.players.find(x => x.id === id); modal('<h2>Reset ' + esc(p.name) + '?</h2><p>This erases all progress for this player on this iPad.</p><button class="btn" data-act="resetYes" data-arg="' + id + '">Yes, reset</button><button class="btn ghost" data-act="closeModal">Cancel</button>'); };
@@ -2331,7 +2506,7 @@ ACT.about = () => render(topbar('About', 'home') + '<div class="screen"><div cla
 /* ---------------- boot ---------------- */
 Speech.setRate(S.settings.rate);
 if (location.protocol.indexOf('http') === 0 && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
-window.PAP = { S, SL, goHome, goHub, goParent, ACT, openLesson, startRun, save, get R() { return R; }, get E() { return E; }, renderEx: f => renderEx(f) }; // for testing
+window.PAP = { S, SL, goHome, goHub, goParent, ACT, openLesson, startRun, save, uiFlags, uiBtn, uiInstr, get R() { return R; }, get E() { return E; }, renderEx: f => renderEx(f) }; // for testing
 S.current && me() && me().setupDone ? goHub() : goHome();
 })();
 
